@@ -6,7 +6,7 @@ from app.models import db, Business
 businesses_routes = Blueprint('businesses', __name__)
 
 # Get all businesses
-@businesses_routes.route('')
+@businesses_routes.route('/')
 def get_businesses():
     businesses = Business.query.all()
     return jsonify({
@@ -16,7 +16,7 @@ def get_businesses():
 # Get business by id
 @businesses_routes.route('/<int:businessId>')
 def get_business_by_id(businessId):
-    business = Business.query.filter(Business.id == businessId).all()
+    business = Business.query.get(businessId)
 
     if business is None:
         return jsonify({"message": "Business couldn't be found"}), 404
@@ -26,7 +26,7 @@ def get_business_by_id(businessId):
     }), 200
 
 # Create business
-@businesses_routes.route('', mehtods=['POST'])
+@businesses_routes.route('', methods=['POST'])
 @login_required
 def create_business():
     data = request.get_json()

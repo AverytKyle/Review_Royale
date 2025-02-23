@@ -17,7 +17,7 @@ def get_reviews():
 # Get review by id
 @reviews_routes.route('/<int:reviewId>')
 def get_review_by_id(reviewId):
-    review = Reviews.query.filter(Reviews.id == reviewId).all()
+    review = Reviews.query.get(reviewId)
 
     if review is None:
         return jsonify({"message": "Review couldn't be found"}), 404
@@ -28,7 +28,7 @@ def get_review_by_id(reviewId):
 
 # Get reviews for business
 @reviews_routes.route('/businesses/<int:businessId>')
-def get_review_by_id(businessId):
+def get_review_by_business_id(businessId):
     reviews = Reviews.query.filter(Reviews.businessId == businessId).all()
 
     if reviews is None:
@@ -39,7 +39,7 @@ def get_review_by_id(businessId):
     }), 200
 
 # Create a review
-@reviews_routes.route('', mehtods=['POST'])
+@reviews_routes.route('', methods=['POST'])
 @login_required
 def create_review():
     data = request.get_json()
