@@ -14,7 +14,7 @@ class Business(db.Model):
     phoneNumber = db.Column(db.String(50), nullable=False)
     website = db.Column(db.String(255), nullable=False)
     addressLineOne = db.Column(db.String(50), nullable=False)
-    addressLineTwo = db.Column(db.String(50), nullable=False)
+    addressLineTwo = db.Column(db.String(50), nullable=True)
     city = db.Column(db.String(50), nullable=False)
     state = db.Column(db.String(2), nullable=False)
     zip = db.Column(db.String(50), nullable=False)
