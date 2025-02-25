@@ -9,6 +9,10 @@ import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import "./Navigation.css";
 
+const handleSearch = () => {
+
+}
+
 function Navigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,21 +23,20 @@ function Navigation() {
   return (
     <nav className="nav-bar-container">
       <div className="profile-section">
+        <div className="nav-title">
+          <h1>Review Royale</h1>
+        </div>
+        <div className="nav-search-container">
+          <input
+            type="search"
+            className="nav-search-bar"
+            placeholder="Search for businesses"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </div>
         {sessionUser ? (
           <div className="logged-in-container">
             <ProfileButton className="nav-profile-button" />
-            {/* <div className="user-info">
-              <p className="user-info-text">
-                {sessionUser.username.length > 15
-                  ? `${sessionUser.username.slice(0, 15)}...`
-                  : sessionUser.username}
-              </p>
-              <p className="user-info-text">
-                {sessionUser.email.length > 15
-                  ? `${sessionUser.email.slice(0, 15)}...`
-                  : sessionUser.email}
-              </p>
-            </div> */}
           </div>
         ) : (
           <div className="non-logged-buttons-container">

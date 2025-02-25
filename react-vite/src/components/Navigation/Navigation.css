@@ -1,9 +1,51 @@
 .nav-bar-container {
   display: flex;
   flex-direction: row-reverse;
-  border: 1px red solid;
+  background-color: #181F1C;
+  width: 100%;
 }
 
 .logged-in-container {
   position: relative;
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.nav-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #315C2B;
+  margin: 0;
+  padding: 15px;
+}
+
+.nav-search-container {
+  display: flex;
+  align-items: center;
+  margin: 0 20px;
+}
+
+.nav-search-bar {
+  padding: 8px 15px;
+  border: 2px solid #315C2B;
+  border-radius: 20px;
+  font-size: 16px;
+  width: 250px;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.nav-search-bar:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(49, 92, 43, 0.3);
+  width: 300px;
 }
