@@ -11,9 +11,9 @@ const loadReviews = reviews => ({
     reviews
 });
 
-const loadBusinessReviews = businessId => ({
+const loadBusinessReviews = reviews => ({
     type: LOAD_BUSINESS_REVIEWS,
-    businessId
+    reviews
 })
 
 const create_review = review => ({
@@ -75,19 +75,17 @@ export const createReview = (reviewData) => async dispatch => {
 }
 
 export const updateReview = (reviewId, reviewData) => async dispatch => {
-    const formattedData = {
-        userId: reviewData.userId,
-        businessId: reviewData.businessId,
-        message: reviewData.message,
-        stars: reviewData.stars
-    };
-
     const response = await csrfFetch(`/api/reviews/${reviewId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formattedData)
+        body: JSON.stringify({
+            userId: reviewData.userId,
+            businessId: reviewData.businessId,
+            message: reviewData.message,
+            stars: reviewData.stars
+        })
     });
 
     if (response.ok) {
