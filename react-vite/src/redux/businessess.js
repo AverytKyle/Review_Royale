@@ -179,7 +179,7 @@ const businessesReducer = (state = initialState, action) => {
         }
         case DELETE: {
             const newState = { ...state };
-            delete newState.Businesses[action.noteId]
+            delete newState.Businesses[action.businessId]
             return newState;
         }
         default:
