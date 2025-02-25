@@ -9,7 +9,7 @@ reviews_routes = Blueprint('reviews', __name__)
 @reviews_routes.route('')
 @login_required
 def get_reviews():
-    reviews = Reviews.query.filter_by(user_id=current_user.id).all()
+    reviews = Reviews.query.filter_by(userId=current_user.id).all()
     return jsonify({
         'Reviews': [n.to_dict() for n in reviews]
     }), 200

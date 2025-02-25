@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 from datetime import datetime
 from app.models import db, Business
 
@@ -9,6 +9,14 @@ businesses_routes = Blueprint('businesses', __name__)
 @businesses_routes.route('/')
 def get_businesses():
     businesses = Business.query.all()
+    return jsonify({
+        'Businesses': [n.to_dict() for n in businesses]
+    }), 200
+
+# Get all businesses for user
+@businesses_routes.route('/current')
+def get_businesses_user():
+    businesses = Business.query.filter_by(userId=current_user.id).all()
     return jsonify({
         'Businesses': [n.to_dict() for n in businesses]
     }), 200
