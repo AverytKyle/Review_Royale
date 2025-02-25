@@ -5,6 +5,7 @@ from sqlalchemy.sql import text
 def seed_businesses():
     demo_business_1 = Business(
         name="Fake 1",
+        userId=1,
         email="fakeemail@aa.io",
         phoneNumber="5551112222",
         website="www.fake.com",
@@ -16,6 +17,7 @@ def seed_businesses():
     )
     demo_business_2 = Business(
         name="Fake 2",
+        userId=1,
         email="fakeremail@aa.io",
         phoneNumber="5551112222",
         website="www.fake.com",
@@ -27,6 +29,7 @@ def seed_businesses():
     )
     demo_business_3 = Business(
         name="Fake 3",
+        userId=1,
         email="fakestemail@aa.io",
         phoneNumber="5551112222",
         website="www.fake.com",

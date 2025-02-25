@@ -1,8 +1,8 @@
 """create table
 
-Revision ID: 53e1681e4d9f
+Revision ID: de23d117f12c
 Revises: 
-Create Date: 2025-02-21 21:09:36.300814
+Create Date: 2025-02-24 19:47:32.835789
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '53e1681e4d9f'
+revision = 'de23d117f12c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,13 +31,13 @@ def upgrade():
     )
     op.create_table('businesses',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('userId', sa.Integer(), nullable=True),
+    sa.Column('userId', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('email', sa.String(length=50), nullable=False),
     sa.Column('phoneNumber', sa.String(length=50), nullable=False),
     sa.Column('website', sa.String(length=255), nullable=False),
     sa.Column('addressLineOne', sa.String(length=50), nullable=False),
-    sa.Column('addressLineTwo', sa.String(length=50), nullable=False),
+    sa.Column('addressLineTwo', sa.String(length=50), nullable=True),
     sa.Column('city', sa.String(length=50), nullable=False),
     sa.Column('state', sa.String(length=2), nullable=False),
     sa.Column('zip', sa.String(length=50), nullable=False),

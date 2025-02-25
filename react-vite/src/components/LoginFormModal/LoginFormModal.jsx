@@ -28,11 +28,20 @@ function LoginFormModal() {
     }
   };
 
+  const handleDemoClick = (e) => {
+    e.preventDefault();
+    dispatch(thunkLogin({ email: 'demo@aa.io', password: 'password' }))
+      .then(() => {
+        closeModal();
+        window.location.href = '/';
+      });
+  };
+
   return (
-    <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className='login-form-modal'>
+      <h1 className='login-title'>Log In</h1>
+      <form className='login-form' onSubmit={handleSubmit}>
+        <label className='input-label'>
           Email
           <input
             type="text"
@@ -42,7 +51,7 @@ function LoginFormModal() {
           />
         </label>
         {errors.email && <p>{errors.email}</p>}
-        <label>
+        <label className='input-label'>
           Password
           <input
             type="password"
@@ -52,9 +61,10 @@ function LoginFormModal() {
           />
         </label>
         {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
+        <button className='login-button' type="submit">Log In</button>
+        <button className='demo-user' type='button' onClick={handleDemoClick}>Demo User</button>
       </form>
-    </>
+    </div>
   );
 }
 
