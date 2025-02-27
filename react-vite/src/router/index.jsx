@@ -2,7 +2,10 @@ import { createBrowserRouter } from 'react-router-dom';
 import LoginFormPage from '../components/LoginFormPage';
 import SignupFormPage from '../components/SignupFormPage';
 import Businesses from '../components/Businessess/Businesses';
+import MapContainer from '../components/Maps';
 import Layout from './Layout';
+
+const API_KEY = 'AIzaSyAw7P1sr8XkoP4zrOwof9Hzl1uEDgXmLhk';
 
 export const router = createBrowserRouter([
   {
@@ -10,7 +13,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Businesses />,
+        element: <MapContainer />,
       },
       {
         path: "login",
