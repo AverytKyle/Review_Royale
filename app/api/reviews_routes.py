@@ -5,7 +5,7 @@ from app.models import db, Reviews
 
 reviews_routes = Blueprint('reviews', __name__)
 
-# Get all reviews
+# Get all reviews for user
 @reviews_routes.route('')
 @login_required
 def get_reviews():
@@ -13,6 +13,14 @@ def get_reviews():
     return jsonify({
         'Reviews': [n.to_dict() for n in reviews]
     }), 200
+
+# Get all reviews
+@reviews_routes.route('/recent')
+def get_recent_reviews():
+    reviews = Reviews.query.order_by(Reviews.createdAt.desc()).limit(6).all()
+    return jsonify({
+        "reviews": [n.to_dict() for n in reviews]
+    })
 
 # Get review by id
 @reviews_routes.route('/<int:reviewId>')

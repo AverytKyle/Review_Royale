@@ -1,0 +1,98 @@
+.landing-page-container {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 30%;
+    margin-top: 10%;
+}
+
+.landing-page-category-cycle {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.landing-page-category-title {
+    font-size: 50pt;
+    margin-bottom: 20px;
+}
+
+.landing-page-category {
+    font-size: 30pt;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    width: 50px;
+    height: 4px;
+    background-color: #e0e0e0;
+    margin-top: 20px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #315C2B;
+    animation: fill 5s linear infinite;
+}
+
+@keyframes fill {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.landing-page-category-button {
+    font-size: 30pt;
+    font-weight: 500;
+    background-color: #181F1C;
+    border-radius: 10px; 
+    color: #60712F;
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.landing-page-category-button:hover {
+    color: #9EA93F;
+    transform: scale(1.05);
+}
+
+.landing-page-recent-reviews {
+    margin-top: 100px;
+    width: 100%;
+}
+
+.landing-page-reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.landing-page-review-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.landing-page-review-card h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.landing-page-review-rating {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #2196f3;
+}
