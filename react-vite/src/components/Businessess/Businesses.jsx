@@ -7,7 +7,7 @@ function Businesses() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const businesses = useSelector((state) => state.businesses.Businesses)
-
+    
     useEffect(() => {
         dispatch(getCurrentUserBusinesses())
     }, [dispatch]);

@@ -84,3 +84,31 @@
   outline: none;
   border: none;
 }
+
+.search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-suggestions {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.nav-location-bar {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-left: 10px;
+  width: 200px;
+}
+
+.nav-search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
