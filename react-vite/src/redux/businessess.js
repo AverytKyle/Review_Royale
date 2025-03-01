@@ -1,5 +1,7 @@
 import { csrfFetch } from "./csrf";
 
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
 const LOAD_CURRENT = 'businesses/LOAD_CURRENT';
 const LOAD_ALL = 'businesses/LOAD_ALL';
 const LOAD_BY_ID = 'businesses/LOAD_BY_ID';
@@ -47,7 +49,7 @@ export const getCurrentUserBusinesses = () => async dispatch => {
     }
 }
 
-export const getBusinessById = () => async dispatch => {
+export const getBusinessById = (businessId) => async dispatch => {
     const response = await csrfFetch(`/api/businesses/${businessId}`);
 
     if (response.ok) {
@@ -55,6 +57,22 @@ export const getBusinessById = () => async dispatch => {
         dispatch(loadById(business));
         return business
     }
+}
+
+export const getPlaceById = (placeId) => async dispatch => {
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    
+    const request = {
+        placeId: placeId,
+        fields: ['name', 'formatted_address', 'formatted_phone_number', 'website', 'geometry']
+    };
+
+    service.getDetails(request, (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            dispatch(loadById(place));
+            return place;
+        }
+    });
 }
 
 export const getAllBusinesses = () => async dispatch => {

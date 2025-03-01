@@ -66,34 +66,35 @@ function Navigation() {
     setSearchTerm(value);
 
     if (value.length >= 2) {
-      const { PlacesService } = await google.maps.importLibrary("places");
-      const service = new PlacesService(document.createElement('div'));
+      const { AutocompleteService } = await google.maps.importLibrary("places");
+      const service = new AutocompleteService();
+
+      const request = {
+        input: value,
+        componentRestrictions: { country: 'us' }, // Optional: restrict to US
+        types: ['establishment'] // Focus on businesses
+      };
 
       if (locationTerm) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address: locationTerm }, (results, status) => {
           if (status === google.maps.GeocoderStatus.OK) {
             const location = results[0].geometry.location;
+            request.location = location;
+            request.radius = 40234; // ~25 miles in meters
 
-            service.textSearch({
-              query: value,
-              location: location,
-              radius: 40234
-            }, (results, status) => {
+            service.getPlacePredictions(request, (predictions, status) => {
               if (status === google.maps.places.PlacesServiceStatus.OK) {
-                setSuggestions(results.slice(0, 5));
+                setSuggestions(predictions.slice(0, 5));
                 setShowSuggestions(true);
               }
             });
           }
         });
       } else {
-        // Default to current location or general search if no location specified
-        service.textSearch({
-          query: value
-        }, (results, status) => {
+        service.getPlacePredictions(request, (predictions, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
-            setSuggestions(results.slice(0, 5));
+            setSuggestions(predictions.slice(0, 5));
             setShowSuggestions(true);
           }
         });
@@ -105,27 +106,28 @@ function Navigation() {
   };
 
   const handleSuggestionClick = async (place) => {
-    const { PlacesService } = await google.maps.importLibrary("places");
-    const service = new PlacesService(document.createElement('div'));
+    const { Place } = await google.maps.importLibrary("places");
 
-    service.getDetails({
-      placeId: place.place_id,
-      fields: ['name', 'formatted_address', 'formatted_phone_number', 'website', 'email']
-    }, (placeDetails, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        navigate('/search', {
-          state: {
-            results: [{
-              id: place.place_id,
-              name: placeDetails.name,
-              address: placeDetails.formatted_address,
-              phone: placeDetails.formatted_phone_number,
-              website: placeDetails.website,
-              email: placeDetails.email
-            }],
-            searchTerm: placeDetails.name
-          }
-        });
+    const initialPlace = new Place({
+      id: place.place_id,
+      requestedLanguage: "en",
+    });
+
+    const fields = await initialPlace.fetchFields({
+      fields: ["displayName", "formattedAddress", "location", "id", "websiteURI"]
+    });
+
+    // Ensure we have a valid ID before navigation
+    const businessId = fields.Eg?.id || place.place_id;
+
+    navigate(`/businesses/${businessId}`, {
+      state: {
+        businessDetails: {
+          id: businessId,
+          name: fields.Eg?.displayName,
+          address: fields.Eg?.formattedAddress,
+          website: fields.Eg?.websiteURI,
+        }
       }
     });
 
@@ -178,11 +180,11 @@ function Navigation() {
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                   zIndex: 1000
                 }}>
-                {suggestions.map((place) => (
+                {suggestions.map((prediction) => (
                   <div
-                    key={place.place_id}
+                    key={prediction.place_id}
                     className="suggestion-item"
-                    onClick={() => handleSuggestionClick(place)}
+                    onClick={() => handleSuggestionClick(prediction)}
                     style={{
                       padding: '10px',
                       cursor: 'pointer',
@@ -191,9 +193,9 @@ function Navigation() {
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
                   >
-                    <div>{place.name}</div>
+                    <div>{prediction.structured_formatting.main_text}</div>
                     <div style={{ fontSize: '0.8em', color: '#666' }}>
-                      {place.formatted_address}
+                      {prediction.structured_formatting.secondary_text}
                     </div>
                   </div>
                 ))}

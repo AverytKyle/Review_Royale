@@ -1,14 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getKey } from '../../redux/maps';
-import { getPlaceDetails } from '../../context/PlaceDetails';
+// import { getPlaceDetails } from '../../context/PlaceDetails';
 import { Loader } from '@googlemaps/js-api-loader';
+
+let loader = null;
 
 function MapContainer() {
     const mapRef = useRef(null);
     const key = useSelector((state) => state.maps.key);
     const dispatch = useDispatch();
 
+    let placeDetails
     useEffect(() => {
         if (!key) {
             dispatch(getKey());
@@ -16,45 +19,43 @@ function MapContainer() {
     }, [dispatch, key]);
 
     useEffect(() => {
-        if (key) {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,marker`;
-            script.async = true;
-            script.defer = true;
+        if (!key) return;
 
-            script.onload = async () => {
-                const { Map } = await google.maps.importLibrary("maps");
-
-                // Get user location
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-
-                    const map = new Map(mapRef.current, {
-                        center: userLocation,
-                        zoom: 12,
-                        mapId: '751c754df1680c1b'
-                    });
-
-                    // Create a standard marker with a custom icon
-                    const marker = new google.maps.Marker({
-                        position: userLocation,
-                        map: map,
-                        title: "You are here",
-                        icon: {
-                            url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                            scaledSize: new google.maps.Size(40, 40)
-                        }
-                    });
-
-                    await getPlaceDetails(map);
-                });
-            };
-
-            document.head.appendChild(script);
+        if (!loader) {
+            loader = new Loader({
+                apiKey: key,
+                version: "weekly",
+                libraries: ["places"]
+            });
         }
+
+        loader.load().then(async () => {
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+            
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                const map = new Map(mapRef.current, {
+                    center: userLocation,
+                    zoom: 12,
+                    mapId: '751c754df1680c1b'
+                });
+
+                const marker = new AdvancedMarkerElement({
+                    map,
+                    position: userLocation,
+                    title: "You are here"
+                });
+
+                const placeDetails = await getPlaceDetails(map);
+                console.log("Place details:", placeDetails);
+            });
+        });
+
     }, [key]);
 
     return (

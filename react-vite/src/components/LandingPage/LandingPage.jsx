@@ -32,8 +32,6 @@ function LandingPage() {
         fetchReviews();
     }, []);
 
-    console.log("Reviews", reviews)
-
     useEffect(() => {
         if (categories.length > 0) {
             const intervalId = setInterval(() => {
