@@ -51,6 +51,62 @@ export const getReviewsByBusiness = (businessId) => async dispatch => {
         }
 }
 
+export const getPlaceReviews = (placeId) => async dispatch => {
+    const mapDiv = document.createElement('div');
+    mapDiv.style.display = 'none';
+    document.body.appendChild(mapDiv);
+    
+    const map = new google.maps.Map(mapDiv, {
+        center: { lat: 0, lng: 0 },
+        zoom: 2
+    });
+
+    const service = new google.maps.places.PlacesService(map);
+    
+    const getAllDetails = async () => {
+        const request = {
+            placeId: placeId,
+            fields: ['reviews', 'rating', 'user_ratings_total'],
+            language: 'en',
+            reviewsSort: 'most_relevant'
+        };
+
+        const reviews = await new Promise((resolve) => {
+            service.getDetails(request, (place, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    resolve(place.reviews || []);
+                } else {
+                    resolve([]);
+                }
+            });
+        });
+
+        return reviews;
+    };
+
+    const reviews = await getAllDetails();
+    document.body.removeChild(mapDiv);
+    
+    const reviewsData = {
+        Reviews: reviews.reduce((acc, review, index) => {
+            acc[index] = {
+                id: index,
+                businessId: placeId,
+                message: review.text,
+                stars: review.rating,
+                author_name: review.author_name,
+                createdAt: new Date(review.time * 1000).toISOString(),
+                updatedAt: new Date(review.time * 1000).toISOString()
+            };
+            return acc;
+        }, {})
+    };
+
+    dispatch(loadBusinessReviews(reviewsData));
+    return reviewsData;
+};
+
+
 export const createReview = (reviewData) => async dispatch => {
     const formattedData = {
         userId: reviewData.userId,
@@ -122,13 +178,7 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case LOAD_BUSINESS_REVIEWS: {
             const newState = { ...state };
-            newState.Reviews = {};
-            const reviewsArray = action.reviews.Reviews;
-            reviewsArray.forEach(review => {
-                newState.Reviews[review.id] = {
-                    ...review
-                }
-            });
+            newState.Reviews = action.reviews.Reviews;
             return newState;
         }
         case CREATE_REVIEW: {

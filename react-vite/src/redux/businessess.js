@@ -64,16 +64,34 @@ export const getPlaceById = (placeId) => async dispatch => {
     
     const request = {
         placeId: placeId,
-        fields: ['name', 'formatted_address', 'formatted_phone_number', 'website', 'geometry']
+        fields: [
+            'name',
+            'formatted_address',
+            'formatted_phone_number',
+            'website',
+            'delivery',
+            'geometry',
+            'opening_hours',
+            'rating',
+            'reviews',
+            'types',
+            'photos',
+            'user_ratings_total'
+        ]
     };
 
-    service.getDetails(request, (place, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            dispatch(loadById(place));
-            return place;
-        }
+    return new Promise((resolve, reject) => {
+        service.getDetails(request, (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                dispatch(loadById(place));
+                resolve(place);
+            } else {
+                reject(status);
+            }
+        });
     });
 }
+
 
 export const getAllBusinesses = () => async dispatch => {
     const response = await csrfFetch(`/api/businesses`);

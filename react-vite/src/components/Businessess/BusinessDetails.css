@@ -1,0 +1,145 @@
+.business-details-containter {
+    display: flex;
+    flex-direction: column;
+}
+
+.business-details-header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 500px;
+    text-align: left;
+    padding-left: 20%;  
+    justify-content: center; 
+    align-items: flex-start; 
+}
+
+.business-dtails-name {
+    font-weight: bold;
+    font-size: 25pt;
+}
+
+.business-details-ratings {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 20pt;
+}
+
+.business-details-hours-website {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.status-open {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.status-closed {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.business-details-website {
+    color: #0073bb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.business-details-website a:hover {
+    text-decoration: underline;
+}
+
+.business-details-info {
+    display: flex;
+    flex-direction: row;
+    height: 400px;
+    margin-left: 20%;
+    text-align: left;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.business-details-location {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 300px;
+    font-size: 15pt;
+    gap: 0px;
+}
+
+.business-details-hours {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-size: 20pt;
+}
+
+.business-details-reviews {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 60%;
+    margin-left: 20%;
+    text-align: left;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.business-details-review-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.business-details-review-name {
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+.business-details-review-stars {
+    font-size: 20pt;
+}
+
+.business-details-review-date {
+    font-size: 12pt;
+}
+
+.business-details-review-message {
+    font-size: 15pt;
+    margin-top: 10px;
+    padding: 15px;
+    border-radius: 0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.page-button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+}
+
+.page-button.active {
+    background: #0073bb;
+    color: white;
+    border-color: #0073bb;
+}
+
+.page-button:hover {
+    background: #f5f5f5;
+}
+
+.page-button.active:hover {
+    background: #005c94;
+}

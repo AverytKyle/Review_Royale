@@ -1,0 +1,19 @@
+.business-map-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.directions-link {
+    padding: 8px 16px;
+    background-color: #0073bb;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    align-self: flex-start;
+}
+
+.directions-link:hover {
+    background-color: #005c94;
+}
