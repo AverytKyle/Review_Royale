@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getBusinessById, getPlaceById } from "../../redux/businessess";
+import { getPlaceById } from "../../redux/businessess";
 import { getPlaceReviews } from "../../redux/reviews";
 import BusinessMap from "../Maps/BusinessMap";
+import CreateReviewModal from "../Reviews/CreateReviewModal";
+import OpenModalButton from "../OpenModalButton";
 import "./BusinessDetails.css";
 
 function BusinessDetails() {
@@ -14,6 +16,8 @@ function BusinessDetails() {
     const { businessId } = useParams();
     const business = useSelector((state) => state.businesses.Businesses)
     const reviews = useSelector((state) => state.reviews.Reviews)
+    const [showModal, setShowModal] = useState(false);
+
 
     const indexOfLastReview = currentPage * reviewsPerPage;
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
@@ -47,29 +51,40 @@ function BusinessDetails() {
         return stars;
     };
 
-    const getCurrentDayHours = () => {
-        if (!business.opening_hours?.periods) return "Hours not available";
+    // const getCurrentDayHours = () => {
+    //     if (!business.opening_hours?.periods) return "Hours not available";
 
-        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const today = new Date().getDay();
-        const currentDayPeriod = business.opening_hours.periods.find(period => period.open.day === today);
+    //     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    //     const today = new Date().getDay();
+    //     const currentDayPeriod = business.opening_hours.periods.find(period => period.open.day === today);
 
-        if (!currentDayPeriod) return "Closed";
+    //     if (!currentDayPeriod) return "Closed";
 
-        const openTime = currentDayPeriod.open.time;
-        const closeTime = currentDayPeriod.close.time;
+    //     const openTime = currentDayPeriod.open.time;
+    //     const closeTime = currentDayPeriod.close.time;
 
-        // Format time from 24hr to 12hr format
-        const formatTime = (time) => {
-            const hour = parseInt(time.slice(0, 2));
-            const minutes = time.slice(2);
-            const ampm = hour >= 12 ? 'PM' : 'AM';
-            const formattedHour = hour % 12 || 12;
-            return `${formattedHour}:${minutes} ${ampm}`;
-        };
+    //     // Format time from 24hr to 12hr format
+    //     const formatTime = (time) => {
+    //         const hour = parseInt(time.slice(0, 2));
+    //         const minutes = time.slice(2);
+    //         const ampm = hour >= 12 ? 'PM' : 'AM';
+    //         const formattedHour = hour % 12 || 12;
+    //         return `${formattedHour}:${minutes} ${ampm}`;
+    //     };
 
-        return `${formatTime(openTime)} - ${formatTime(closeTime)}`;
+    //     return `${formatTime(openTime)} - ${formatTime(closeTime)}`;
+    // };
+
+    const getCurrentDayHours = (hours) => {
+        if (!hours) return null;
+
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const currentDayHours = hours[dayOfWeek];
+
+        return currentDayHours?.time || 'Closed'; // Using optional chaining
     };
+
 
     const isBusinessOpen = () => {
         if (!business.opening_hours) return null;
@@ -93,6 +108,10 @@ function BusinessDetails() {
         }
     }, [business]);
 
+    const handleReviewButtonClick = () => {
+        navigate(`/businesses/${businessId}/reviews`)
+    }
+
     return (
         <div className="business-details-container">
             {business && (
@@ -106,7 +125,7 @@ function BusinessDetails() {
                         <p>({business.user_ratings_total} reviews)</p>
                     </div>
                     <div className="business-details-hours-website">
-                        <div>{isBusinessOpen()} {getCurrentDayHours()}</div>
+                        <div>{isBusinessOpen()} {getCurrentDayHours(business.hours)}</div>
                         <div>
                             <a className="business-details-website" href={business.website} target="_blank" rel="noopener noreferrer">
                                 Visit Website
@@ -115,6 +134,15 @@ function BusinessDetails() {
                     </div>
                 </div>
             )}
+            <div className="business-details-review-button-container">
+                <OpenModalButton
+                    buttonText="Post a Review"
+                    onItemClick={() => setShowModal(true)}
+                    modalComponent={<CreateReviewModal businessId={businessId} />}
+                    className="business-details-review-button"
+                />
+            </div>
+
             {business && (
                 <div className="business-details-info">
                     <div className="business-details-location">
@@ -140,7 +168,7 @@ function BusinessDetails() {
                                 day: 'numeric',
                                 year: 'numeric'
                             })}</div>
-                            <div className="business-details-review-message">Review: {review.message}</div>
+                            <div className="business-details-review-message">{review.message}</div>
                         </div>
                     ))}
                     <div className="pagination">

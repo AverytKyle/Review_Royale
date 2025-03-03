@@ -143,3 +143,30 @@
 .page-button.active:hover {
     background: #005c94;
 }
+
+.business-details-container button {
+    padding: 10px 20px;
+    font-size: 15pt;
+    font-weight: bold;
+    border-radius: 4px;
+    background-color: #181F1C;
+    color: #315C2B;
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
+    text-shadow: 
+        -1px -1px 0 #9EA93F,  
+        1px -1px 0 #9EA93F,
+        -1px 1px 0 #9EA93F,
+        1px 1px 0 #9EA93F;
+}
+
+.business-details-container button:hover {
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+
+.business-details-review-button-container {
+    margin-left: 20%;
+    padding: 20px;
+}
