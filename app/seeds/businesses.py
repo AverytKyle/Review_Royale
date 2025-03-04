@@ -6,7 +6,6 @@ def seed_businesses():
     demo_business_1 = Business(
         name="Fake 1",
         userId=1,
-        email="fakeemail@aa.io",
         phoneNumber="5551112222",
         website="www.fake.com",
         addressLineOne="123 Fake St",
@@ -18,7 +17,6 @@ def seed_businesses():
     demo_business_2 = Business(
         name="Fake 2",
         userId=1,
-        email="fakeremail@aa.io",
         phoneNumber="5551112222",
         website="www.fake.com",
         addressLineOne="123 Faker St",
@@ -30,7 +28,6 @@ def seed_businesses():
     demo_business_3 = Business(
         name="Fake 3",
         userId=1,
-        email="fakestemail@aa.io",
         phoneNumber="5551112222",
         website="www.fake.com",
         addressLineOne="123 Fakest St",
