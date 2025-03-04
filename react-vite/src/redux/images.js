@@ -31,7 +31,7 @@ const update_image = image => ({
     image
 })
 
-export const getAllImages = () => async dispatch => {
+export const getAllImages = (businessId) => async dispatch => {
     const response = await csrfFetch(`/api/images/business/${businessId}`);
     
         if (response.ok) {

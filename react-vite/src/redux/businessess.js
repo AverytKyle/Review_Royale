@@ -1,6 +1,7 @@
+/* global google */
 import { csrfFetch } from "./csrf";
 
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+// const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const LOAD_CURRENT = 'businesses/LOAD_CURRENT';
 const LOAD_ALL = 'businesses/LOAD_ALL';

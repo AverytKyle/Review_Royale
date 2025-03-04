@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+/* global google */
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getKey } from "../../redux/maps";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +22,6 @@ function Navigation() {
   const mapsApiKey = useSelector(state => state.maps.key);
   const sessionUser = useSelector((state) => state.session.user);
   const [categories, setCategories] = useState([]);
-  const suggestionsRef = useRef(null);
 
   useEffect(() => {
     dispatch(getKey());

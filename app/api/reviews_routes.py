@@ -35,7 +35,7 @@ def get_review_by_id(reviewId):
     }), 200
 
 # Get reviews for business
-@reviews_routes.route('/businesses/<int:businessId>')
+@reviews_routes.route('/business/<int:businessId>')
 def get_review_by_business_id(businessId):
     reviews = Reviews.query.filter(Reviews.businessId == businessId).all()
 
@@ -47,12 +47,11 @@ def get_review_by_business_id(businessId):
     }), 200
 
 # Create a review
-@reviews_routes.route('/businesses/<int:businessId>', methods=['POST'])
+@reviews_routes.route('/new/<string:businessId>', methods=['POST'])
 @login_required
-def create_review():
+def create_review(businessId):
     data = request.get_json()
     userId = data.get('userId')
-    businessId = data.get('businessId')
     message = data.get('message')
     stars = data.get('stars')
 

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import './LandingPage.css'
 
 function LandingPage() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const [categories, setCategories] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);

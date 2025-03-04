@@ -1,3 +1,4 @@
+/* global google */
 import { csrfFetch } from "./csrf";
 
 const LOAD = 'reviews/LOAD';
@@ -107,7 +108,7 @@ export const getPlaceReviews = (placeId) => async dispatch => {
 };
 
 
-export const createReview = (reviewData) => async dispatch => {
+export const createReview = (reviewData, businessId) => async dispatch => {
     const formattedData = {
         userId: reviewData.userId,
         businessId: reviewData.businessId,
@@ -115,7 +116,7 @@ export const createReview = (reviewData) => async dispatch => {
         stars: reviewData.stars
     }
 
-    const response = await csrfFetch(`/api/reviews/businesses/${businessId}`, {
+    const response = await csrfFetch(`/api/reviews/new/${businessId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -183,8 +184,12 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case CREATE_REVIEW: {
             const newState = { ...state };
-            newState.Reviews[action.payload.id] = action.payload;
-            return newState
+            const reviewId = action.review.id || Object.keys(newState.Reviews || {}).length;
+            newState.Reviews = {
+                ...newState.Reviews,
+                [reviewId]: action.review
+            };
+            return newState;
         }
         case UPDATE_REVIEW: {
             const newState = { ...state };

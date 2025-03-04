@@ -11,7 +11,7 @@ const center = {
   lng: 77.0369,
 };
 
-const Maps = ({ apiKey }) => {
+function Maps({ apiKey }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: apiKey,
@@ -30,4 +30,4 @@ const Maps = ({ apiKey }) => {
   );
 };
 
-export default React.memo(Maps);
+export default Maps;

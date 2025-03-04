@@ -35,7 +35,7 @@ function CreateReviewModal({ businessId }) {
             stars: stars,
         }
 
-        return dispatch(createReview(reviewData))
+        return dispatch(createReview(reviewData, businessId))
             .then(() => {
                 closeModal();
                 dispatch(getPlaceById(businessId));

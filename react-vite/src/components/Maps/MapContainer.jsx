@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+/* global google */
+
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getKey } from '../../redux/maps';
-// import { getPlaceDetails } from '../../context/PlaceDetails';
 import { Loader } from '@googlemaps/js-api-loader';
 
 let loader = null;
@@ -11,7 +12,6 @@ function MapContainer() {
     const key = useSelector((state) => state.maps.key);
     const dispatch = useDispatch();
 
-    let placeDetails
     useEffect(() => {
         if (!key) {
             dispatch(getKey());
@@ -29,32 +29,31 @@ function MapContainer() {
             });
         }
 
-        loader.load().then(async () => {
-            const { Map } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        // loader.load().then(async () => {
+        //     const { Map } = await google.maps.importLibrary("maps");
+        //     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
             
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                const userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
+        //     navigator.geolocation.getCurrentPosition(async (position) => {
+        //         const userLocation = {
+        //             lat: position.coords.latitude,
+        //             lng: position.coords.longitude
+        //         };
 
-                const map = new Map(mapRef.current, {
-                    center: userLocation,
-                    zoom: 12,
-                    mapId: '751c754df1680c1b'
-                });
+        //         const map = new Map(mapRef.current, {
+        //             center: userLocation,
+        //             zoom: 12,
+        //             mapId: '751c754df1680c1b'
+        //         });
 
-                const marker = new AdvancedMarkerElement({
-                    map,
-                    position: userLocation,
-                    title: "You are here"
-                });
+        //         const marker = new AdvancedMarkerElement({
+        //             map,
+        //             position: userLocation,
+        //             title: "You are here"
+        //         });
 
-                const placeDetails = await getPlaceDetails(map);
-                console.log("Place details:", placeDetails);
-            });
-        });
+        //         await getPlaceDetails(map);
+        //     });
+        // });
 
     }, [key]);
 

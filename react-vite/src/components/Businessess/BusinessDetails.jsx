@@ -11,21 +11,12 @@ import "./BusinessDetails.css";
 function BusinessDetails() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const reviewsPerPage = 10;
     const { businessId } = useParams();
     const business = useSelector((state) => state.businesses.Businesses)
     const reviews = useSelector((state) => state.reviews.Reviews)
-    const [showModal, setShowModal] = useState(false);
-
-
-    const indexOfLastReview = currentPage * reviewsPerPage;
-    const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-    const currentReviews = Object.values(reviews || {}).slice(indexOfFirstReview, indexOfLastReview);
-    const totalPages = Math.ceil(Object.values(reviews || {}).length / reviewsPerPage);
+    const [, setShowModal] = useState(false);
 
     useEffect(() => {
-        console.log("Business ID being used:", businessId);
         dispatch(getPlaceById(businessId))
         dispatch(getPlaceReviews(businessId))
     }, [dispatch, businessId])
@@ -51,30 +42,6 @@ function BusinessDetails() {
         return stars;
     };
 
-    // const getCurrentDayHours = () => {
-    //     if (!business.opening_hours?.periods) return "Hours not available";
-
-    //     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    //     const today = new Date().getDay();
-    //     const currentDayPeriod = business.opening_hours.periods.find(period => period.open.day === today);
-
-    //     if (!currentDayPeriod) return "Closed";
-
-    //     const openTime = currentDayPeriod.open.time;
-    //     const closeTime = currentDayPeriod.close.time;
-
-    //     // Format time from 24hr to 12hr format
-    //     const formatTime = (time) => {
-    //         const hour = parseInt(time.slice(0, 2));
-    //         const minutes = time.slice(2);
-    //         const ampm = hour >= 12 ? 'PM' : 'AM';
-    //         const formattedHour = hour % 12 || 12;
-    //         return `${formattedHour}:${minutes} ${ampm}`;
-    //     };
-
-    //     return `${formatTime(openTime)} - ${formatTime(closeTime)}`;
-    // };
-
     const getCurrentDayHours = (hours) => {
         if (!hours) return null;
 
@@ -92,21 +59,6 @@ function BusinessDetails() {
             <span className="status-open">Open</span> :
             <span className="status-closed">Closed</span>;
     };
-
-    useEffect(() => {
-        if (business && business.place_id) {
-            const service = new window.google.maps.places.PlacesService(document.createElement('div'));
-
-            service.getDetails({
-                placeId: business.place_id,
-                fields: ['opening_hours']
-            }, (place, status) => {
-                if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                    setIsOpen(place.opening_hours?.isOpen());
-                }
-            });
-        }
-    }, [business]);
 
     const handleReviewButtonClick = () => {
         navigate(`/businesses/${businessId}/reviews`)
@@ -171,7 +123,7 @@ function BusinessDetails() {
                             <div className="business-details-review-message">{review.message}</div>
                         </div>
                     ))}
-                    <div className="pagination">
+                    {/* <div className="pagination">
                         {Array.from({ length: totalPages }, (_, i) => (
                             <button
                                 key={i + 1}
@@ -181,7 +133,7 @@ function BusinessDetails() {
                                 {i + 1}
                             </button>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
             )}
         </div>
