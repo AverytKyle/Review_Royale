@@ -26,9 +26,8 @@ class Business(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "name": self.name,
             "userid": self.userId,
-            "email": self.email,
+            "name": self.name,
             "phoneNumber": self.phoneNumber,
             "website": self.website,
             "addressLineOne": self.addressLineOne,
