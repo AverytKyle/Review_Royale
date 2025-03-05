@@ -16,7 +16,7 @@ def seed_businessCat():
 
 def undo_businessCat():
     if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.notetags RESTART IDENTITY CASCADE;")
+        db.session.execute(f"TRUNCATE table {SCHEMA}.businessCat RESTART IDENTITY CASCADE;")
     else:
         db.session.execute(text("DELETE FROM businessCat"))
 
