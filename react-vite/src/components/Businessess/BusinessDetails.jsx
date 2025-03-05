@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlaceById } from "../../redux/businessess";
-import { getPlaceReviews } from "../../redux/reviews";
+import { getPlaceReviews, getReviewsByBusiness } from "../../redux/reviews";
 import BusinessMap from "../Maps/BusinessMap";
 import CreateReviewModal from "../Reviews/CreateReviewModal";
 import OpenModalButton from "../OpenModalButton";
@@ -14,11 +14,13 @@ function BusinessDetails() {
     const { businessId } = useParams();
     const business = useSelector((state) => state.businesses.Businesses)
     const reviews = useSelector((state) => state.reviews.Reviews)
+    const googleReviews = useSelector(state => state.reviews.GoogleReviews);
     const [, setShowModal] = useState(false);
 
     useEffect(() => {
         dispatch(getPlaceById(businessId))
         dispatch(getPlaceReviews(businessId))
+        dispatch(getReviewsByBusiness(businessId))
     }, [dispatch, businessId])
 
     const renderStars = (rating) => {

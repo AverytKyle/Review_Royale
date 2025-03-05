@@ -30,7 +30,6 @@ function CreateReviewModal({ businessId }) {
 
         const reviewData = {
             userId: sessionUser.id,
-            businessId: businessId,
             message: review,
             stars: stars,
         }
@@ -42,13 +41,6 @@ function CreateReviewModal({ businessId }) {
                 dispatch(getPlaceReviews(businessId));
                 dispatch(getReviewsByBusiness(businessId))
             })
-            // .catch((error) => {
-            //     if (error.errors) {
-            //       setErrors(error.errors);
-            //     } else {
-            //       setErrors({ review: 'Review already exists for this spot' });
-            //     }
-            //   });
     };
 
     const handleStarMouseEnter = (star) => {

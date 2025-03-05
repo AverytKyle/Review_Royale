@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 
 const LOAD = 'reviews/LOAD';
 const LOAD_BUSINESS_REVIEWS = 'reviews/LOAD_BUSINESS_REVIEWS'
+const LOAD_GOOGLE_REVIEWS = 'reviews/LOAD_GOOGLE_REVIEWS';
 const CREATE_REVIEW = 'reviews/CREATE_REVIEW';
 const DELETE_REVIEW = 'reviews/DELETE_REVIEW';
 const UPDATE_REVIEW = 'reviews/UPDATE_REVIEW';
@@ -16,6 +17,11 @@ const loadBusinessReviews = reviews => ({
     type: LOAD_BUSINESS_REVIEWS,
     reviews
 })
+
+const loadGoogleReviews = reviews => ({
+    type: LOAD_GOOGLE_REVIEWS,
+    reviews
+});
 
 const create_review = review => ({
     type: CREATE_REVIEW,
@@ -43,10 +49,11 @@ export const getAllReviews = () => async dispatch => {
 }
 
 export const getReviewsByBusiness = (businessId) => async dispatch => {
-    const response = await csrfFetch(`/api/reviews/businesses/${businessId}`);
+    const response = await csrfFetch(`/api/reviews/business/${businessId}`);
     
         if (response.ok) {
             const reviews = await response.json();
+            console.log("Reviews from API:", reviews);
             dispatch(loadBusinessReviews(reviews));
             return reviews
         }
@@ -103,7 +110,7 @@ export const getPlaceReviews = (placeId) => async dispatch => {
         }, {})
     };
 
-    dispatch(loadBusinessReviews(reviewsData));
+    dispatch(loadGoogleReviews(reviewsData));
     return reviewsData;
 };
 
@@ -111,7 +118,6 @@ export const getPlaceReviews = (placeId) => async dispatch => {
 export const createReview = (reviewData, businessId) => async dispatch => {
     const formattedData = {
         userId: reviewData.userId,
-        businessId: reviewData.businessId,
         message: reviewData.message,
         stars: reviewData.stars
     }
@@ -161,7 +167,8 @@ export const deleteReview = (reviewId) => async dispatch => {
 }
 
 const initialState = {
-    Reviews: {}
+    Reviews: {},
+    GoogleReviews: {}
 }
 
 const reviewsReducer = (state = initialState, action) => {
@@ -179,7 +186,12 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case LOAD_BUSINESS_REVIEWS: {
             const newState = { ...state };
-            newState.Reviews = action.reviews.Reviews;
+            newState.Reviews = { ...action.reviews.Reviews };
+            return newState;
+        }
+        case LOAD_GOOGLE_REVIEWS: {
+            const newState = { ...state };
+            newState.GoogleReviews = { ...action.reviews.GoogleReviews };
             return newState;
         }
         case CREATE_REVIEW: {

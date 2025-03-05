@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from datetime import datetime
-from app.models import db, Reviews
+from app.models import db, Reviews, ReviewConnections
 
 reviews_routes = Blueprint('reviews', __name__)
 
@@ -38,40 +38,59 @@ def get_review_by_id(reviewId):
 @reviews_routes.route('/business/<int:businessId>')
 def get_review_by_business_id(businessId):
     reviews = Reviews.query.filter(Reviews.businessId == businessId).all()
-
-    if reviews is None:
-        return jsonify({"message": "Reviews couldn't be found"}), 404
     
-    return jsonify({
-        'Review': [n.to_dict() for n in reviews]
-    }), 200
+    if not reviews:
+        return {"message": "Reviews couldn't be found"}, 404
+    
+    return {
+        'Reviews': [review.to_dict() for review in reviews]
+    }, 200
 
-# Create a review
+
+# Create a review for a business with int
+@reviews_routes.route('/new/<int:businessId>', methods=['POST'])
+@login_required
+def create_review_business(businessId):
+    data = request.get_json()
+    new_review = Reviews(
+        userId=data['userId'],
+        message=data['message'],
+        stars=data['stars']
+    )
+    db.session.add(new_review)
+    db.session.commit()
+    
+    # Create the connection
+    review_connection = ReviewConnections(
+        reviewId=new_review.id,
+        businessId=businessId
+    )
+    db.session.add(review_connection)
+    db.session.commit()
+    
+    return jsonify(new_review.to_dict()), 201
+
+# Create a review for a business with string
 @reviews_routes.route('/new/<string:businessId>', methods=['POST'])
 @login_required
-def create_review(businessId):
+def create_review_place(businessId):
     data = request.get_json()
-    userId = data.get('userId')
-    message = data.get('message')
-    stars = data.get('stars')
-
-    if not message:
-        return jsonify({"message": "Message is required"}), 400
-    
-    if not stars:
-        return jsonify({"message": "Stars are required"}), 400
-    
-    review = Reviews(
-        userId=userId,
-        businessId=businessId,
-        message=message,
-        stars=stars,
+    new_review = Reviews(
+        userId=data['userId'],
+        message=data['message'],
+        stars=data['stars']
     )
-    
-    db.session.add(review)
+    db.session.add(new_review)
     db.session.commit()
-
-    return jsonify(review.to_dict()), 201
+    
+    review_connection = ReviewConnections(
+        reviewId=new_review.id,
+        googleStoreId=businessId
+    )
+    db.session.add(review_connection)
+    db.session.commit()
+    
+    return jsonify(new_review.to_dict()), 201
 
 # Update a review
 @reviews_routes.route('/<int:reviewId>', methods=['PUT'])
