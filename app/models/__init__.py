@@ -5,4 +5,5 @@ from .reviews import Reviews
 from .images import Images
 from .businessCat import BusinessCat
 from .categories import Categories
+from .reviewConnections import ReviewConnections
 from .db import environment, SCHEMA

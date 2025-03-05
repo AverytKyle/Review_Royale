@@ -5,19 +5,16 @@ from sqlalchemy.sql import text
 def seed_reviews():
     demo_review_1 = Reviews(
         userId=1,
-        businessId=1,
         message="Great place! Would come back again!",
         stars=5
     )
     demo_review_2 = Reviews(
         userId=1,
-        businessId=2,
         message="Great place! Would come back again!",
         stars=5
     )
     demo_review_3 = Reviews(
         userId=1,
-        businessId=3,
         message="Great place! Would come back again!",
         stars=5
     )

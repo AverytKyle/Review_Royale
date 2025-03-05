@@ -20,7 +20,7 @@ class Business(db.Model):
     createdAt = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updatedAt = db.Column(db.DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
-    reviews = db.relationship('Reviews', backref='businesses', lazy=True, cascade='all, delete-orphan')
+    reviews = db.relationship('ReviewConnections', backref='businesses', lazy=True, cascade='all, delete-orphan')
     images = db.relationship('Images', backref='businesses', lazy=True, cascade='all, delete-orphan')
 
     def to_dict(self):
@@ -36,5 +36,6 @@ class Business(db.Model):
             "state": self.state,
             "zip": self.zip,
             "createdAt": self.createdAt,
-            "updatedAt": self.updatedAt
+            "updatedAt": self.updatedAt,
+            "reviews": [connection.to_dict() for connection in self.reviews]
         }
