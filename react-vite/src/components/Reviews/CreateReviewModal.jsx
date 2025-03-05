@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useModal } from '../../context/Modal';
 import { getPlaceById } from "../../redux/businessess";
-import { getPlaceReviews, createReview, getReviewsByBusiness } from "../../redux/reviews";
+import { getAllPlaceReviews, createReview, getReviewsByBusiness } from "../../redux/reviews";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
@@ -38,8 +38,7 @@ function CreateReviewModal({ businessId }) {
             .then(() => {
                 closeModal();
                 dispatch(getPlaceById(businessId));
-                dispatch(getPlaceReviews(businessId));
-                dispatch(getReviewsByBusiness(businessId))
+                dispatch(getAllPlaceReviews(businessId));
             })
     };
 

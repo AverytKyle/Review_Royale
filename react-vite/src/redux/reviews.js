@@ -95,7 +95,7 @@ export const getPlaceReviews = (placeId) => async dispatch => {
     document.body.removeChild(mapDiv);
     
     const reviewsData = {
-        Reviews: reviews.reduce((acc, review, index) => {
+        GoogleReviews: reviews.reduce((acc, review, index) => {
             acc[index] = {
                 id: index,
                 businessId: placeId,
@@ -107,11 +107,27 @@ export const getPlaceReviews = (placeId) => async dispatch => {
             };
             return acc;
         }, {})
-    };
+    };    
 
     dispatch(loadGoogleReviews(reviewsData));
     return reviewsData;
 };
+
+export const getAllPlaceReviews = (businessId) => async dispatch => {
+    const stringId = String(businessId);
+
+    // Get reviews from your database
+    const dbReviews = await dispatch(getReviewsByBusiness(stringId));
+    
+    // Get reviews from Google Places API
+    const googleReviews = await dispatch(getPlaceReviews(businessId));
+    
+    return {
+        dbReviews,
+        googleReviews
+    };
+};
+
 
 
 export const createReview = (reviewData, businessId) => async dispatch => {
@@ -194,7 +210,11 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case LOAD_GOOGLE_REVIEWS: {
             const newState = { ...state };
-            newState.GoogleReviews = { ...action.reviews.GoogleReviews };
+            newState.GoogleReviews = {};
+            // Normalize the reviews data
+            Object.values(action.reviews.GoogleReviews).forEach(review => {
+                newState.GoogleReviews[review.id] = review;
+            });
             return newState;
         }
         case CREATE_REVIEW: {

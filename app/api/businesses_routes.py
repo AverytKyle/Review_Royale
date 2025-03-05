@@ -29,9 +29,7 @@ def get_business_by_id(businessId):
     if business is None:
         return jsonify({"message": "Business couldn't be found"}), 404
     
-    return jsonify({
-        'Business': business.to_dict()
-    }), 200
+    return jsonify(business.to_dict()), 200
 
 # Create business
 @businesses_routes.route('', methods=['POST'])

@@ -35,9 +35,16 @@ def get_review_by_id(reviewId):
     }), 200
 
 # Get reviews for business
-@reviews_routes.route('/business/<int:businessId>')
+@reviews_routes.route('/business/<path:businessId>')
 def get_business_reviews(businessId):
-    reviews = Reviews.query.join(ReviewConnections).filter(ReviewConnections.businessId == businessId).all()
+    try:
+        # Try to convert to int for regular business IDs
+        business_id_int = int(businessId)
+        reviews = Reviews.query.join(ReviewConnections).filter(ReviewConnections.businessId == business_id_int).all()
+    except ValueError:
+        # If conversion fails, treat as string (Google Place ID)
+        reviews = Reviews.query.join(ReviewConnections).filter(ReviewConnections.googleStoreId == businessId).all()
+    
     return jsonify({
         'Reviews': [review.to_dict() for review in reviews]
     })

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlaceById, getBusinessById } from "../../redux/businessess";
-import { getPlaceReviews, getReviewsByBusiness } from "../../redux/reviews";
+import { getPlaceReviews, getReviewsByBusiness, getAllPlaceReviews } from "../../redux/reviews";
 import BusinessMap from "../Maps/BusinessMap";
 import CreateReviewModal from "../Reviews/CreateReviewModal";
 import OpenModalButton from "../OpenModalButton";
@@ -24,7 +24,7 @@ function BusinessDetails() {
                 if (businessId.length > 3) {
                     // Google Places API path
                     await dispatch(getPlaceById(businessId));
-                    await dispatch(getPlaceReviews(businessId));
+                    await dispatch(getAllPlaceReviews(businessId));
                 } else {
                     const businessResponse = await dispatch(getBusinessById(businessId));
                     if (businessResponse) {
