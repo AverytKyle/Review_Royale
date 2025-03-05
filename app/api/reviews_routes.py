@@ -36,16 +36,11 @@ def get_review_by_id(reviewId):
 
 # Get reviews for business
 @reviews_routes.route('/business/<int:businessId>')
-def get_review_by_business_id(businessId):
-    reviews = Reviews.query.filter(Reviews.businessId == businessId).all()
-    
-    if not reviews:
-        return {"message": "Reviews couldn't be found"}, 404
-    
-    return {
+def get_business_reviews(businessId):
+    reviews = Reviews.query.join(ReviewConnections).filter(ReviewConnections.businessId == businessId).all()
+    return jsonify({
         'Reviews': [review.to_dict() for review in reviews]
-    }, 200
-
+    })
 
 # Create a review for a business with int
 @reviews_routes.route('/new/<int:businessId>', methods=['POST'])

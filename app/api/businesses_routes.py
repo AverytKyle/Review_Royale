@@ -127,4 +127,4 @@ def delete_business(businessId):
 
     db.session.delete(business)
     db.session.commit()
-    return {'message': 'Business successfully deleted'}, 200
+    return jsonify({'message': 'Business successfully deleted'}), 200

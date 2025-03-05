@@ -61,8 +61,15 @@ export const getBusinessById = (businessId) => async dispatch => {
 }
 
 export const getPlaceById = (placeId) => async dispatch => {
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    // First load the places library
+    await google.maps.importLibrary("places");
     
+    // Create service with proper DOM element
+    const mapDiv = document.createElement('div');
+    document.body.appendChild(mapDiv);
+    const map = new google.maps.Map(document.createElement('div'));
+    const service = new google.maps.places.PlacesService(map);
+
     const request = {
         placeId: placeId,
         fields: [
@@ -83,6 +90,7 @@ export const getPlaceById = (placeId) => async dispatch => {
 
     return new Promise((resolve, reject) => {
         service.getDetails(request, (place, status) => {
+            document.body.removeChild(mapDiv);
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 dispatch(loadById(place));
                 resolve(place);
@@ -91,7 +99,7 @@ export const getPlaceById = (placeId) => async dispatch => {
             }
         });
     });
-}
+};
 
 
 export const getAllBusinesses = () => async dispatch => {

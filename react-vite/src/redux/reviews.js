@@ -51,12 +51,11 @@ export const getAllReviews = () => async dispatch => {
 export const getReviewsByBusiness = (businessId) => async dispatch => {
     const response = await csrfFetch(`/api/reviews/business/${businessId}`);
     
-        if (response.ok) {
-            const reviews = await response.json();
-            console.log("Reviews from API:", reviews);
-            dispatch(loadBusinessReviews(reviews));
-            return reviews
-        }
+    if (response.ok) {
+        const reviews = await response.json();
+        dispatch(loadBusinessReviews(reviews));
+        return reviews;
+    }
 }
 
 export const getPlaceReviews = (placeId) => async dispatch => {
@@ -186,7 +185,11 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case LOAD_BUSINESS_REVIEWS: {
             const newState = { ...state };
-            newState.Reviews = { ...action.reviews.Reviews };
+            newState.Reviews = {};
+            // Normalize the reviews data
+            Object.values(action.reviews.Reviews).forEach(review => {
+                newState.Reviews[review.id] = review;
+            });
             return newState;
         }
         case LOAD_GOOGLE_REVIEWS: {

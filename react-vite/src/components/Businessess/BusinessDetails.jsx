@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getPlaceById } from "../../redux/businessess";
+import { getPlaceById, getBusinessById } from "../../redux/businessess";
 import { getPlaceReviews, getReviewsByBusiness } from "../../redux/reviews";
 import BusinessMap from "../Maps/BusinessMap";
 import CreateReviewModal from "../Reviews/CreateReviewModal";
@@ -12,16 +12,52 @@ function BusinessDetails() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { businessId } = useParams();
+    const [isLoading, setIsLoading] = useState(true);
     const business = useSelector((state) => state.businesses.Businesses)
     const reviews = useSelector((state) => state.reviews.Reviews)
     const googleReviews = useSelector(state => state.reviews.GoogleReviews);
     const [, setShowModal] = useState(false);
 
     useEffect(() => {
-        dispatch(getPlaceById(businessId))
-        dispatch(getPlaceReviews(businessId))
-        dispatch(getReviewsByBusiness(businessId))
-    }, [dispatch, businessId])
+        const loadData = async () => {
+            try {
+                if (businessId.length > 3) {
+                    // Google Places API path
+                    await dispatch(getPlaceById(businessId));
+                    await dispatch(getPlaceReviews(businessId));
+                } else {
+                    const businessResponse = await dispatch(getBusinessById(businessId));
+                    if (businessResponse) {
+                        // Use the review_connections table relationship
+                        await dispatch(getReviewsByBusiness(parseInt(businessId)));
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading business data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+
+        if (window.google) {
+            loadData();
+        } else {
+            const checkGoogleInterval = setInterval(() => {
+                if (window.google) {
+                    clearInterval(checkGoogleInterval);
+                    loadData();
+                }
+            }, 100);
+
+            return () => clearInterval(checkGoogleInterval);
+        }
+    }, [dispatch, businessId]);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
 
     const renderStars = (rating) => {
         const stars = [];
@@ -56,8 +92,8 @@ function BusinessDetails() {
 
 
     const isBusinessOpen = () => {
-        if (!business.opening_hours) return null;
-        return business.opening_hours.open_now ?
+        if (!business?.opening_hours) return <p>Hours unavailable</p>;
+        return business.opening_hours.isOpen() ?
             <span className="status-open">Open</span> :
             <span className="status-closed">Closed</span>;
     };
