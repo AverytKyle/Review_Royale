@@ -90,13 +90,35 @@ function BusinessDetails() {
         return currentDayHours?.time || 'Closed'; // Using optional chaining
     };
 
-
     const isBusinessOpen = () => {
         if (!business?.opening_hours) return <p>Hours unavailable</p>;
-        return business.opening_hours.isOpen() ?
-            <span className="status-open">Open</span> :
-            <span className="status-closed">Closed</span>;
+        
+        // Get current time in local timezone
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const currentTime = currentHour * 60 + currentMinutes;
+        
+        // Parse business hours for today
+        const today = now.getDay();
+        const todayHours = business.opening_hours.periods[today];
+        
+        if (todayHours) {
+            const openTime = parseInt(todayHours.open.time.slice(0, 2)) * 60 + 
+                            parseInt(todayHours.open.time.slice(2));
+            const closeTime = parseInt(todayHours.close.time.slice(0, 2)) * 60 + 
+                             parseInt(todayHours.close.time.slice(2));
+                             
+            const isOpen = currentTime >= openTime && currentTime < closeTime;
+            
+            return isOpen ? 
+                <span className="status-open">Open</span> : 
+                <span className="status-closed">Closed</span>;
+        }
+        
+        return <p>Hours unavailable</p>;
     };
+    
 
     const handleReviewButtonClick = () => {
         navigate(`/businesses/${businessId}/reviews`)
