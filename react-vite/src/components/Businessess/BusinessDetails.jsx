@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlaceById, getBusinessById } from "../../redux/businessess";
-import { getPlaceReviews, getReviewsByBusiness, getAllPlaceReviews } from "../../redux/reviews";
+import { getReviewsByBusiness, getAllPlaceReviews } from "../../redux/reviews";
 import BusinessMap from "../Maps/BusinessMap";
 import CreateReviewModal from "../Reviews/CreateReviewModal";
 import OpenModalButton from "../OpenModalButton";
@@ -10,13 +10,34 @@ import "./BusinessDetails.css";
 
 function BusinessDetails() {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const { businessId } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const business = useSelector((state) => state.businesses.Businesses)
     const reviews = useSelector((state) => state.reviews.Reviews)
     const googleReviews = useSelector(state => state.reviews.GoogleReviews);
     const [, setShowModal] = useState(false);
+    const [reviewUsers, setReviewUsers] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const reviewsPerPage = 10;
+
+    const combinedReviews = [
+        ...(reviews ? Object.values(reviews).map(review => ({
+            ...review,
+            authorName: reviewUsers[review.userid]?.firstName || 'Loading...',
+            isGoogleReview: false
+        })) : []),
+        ...(googleReviews ? Object.values(googleReviews).map(review => ({
+            ...review,
+            authorName: review.author_name,
+            isGoogleReview: true
+        })) : [])
+    ];
+
+    // Pagination logic
+    const indexOfLastReview = currentPage * reviewsPerPage;
+    const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+    const currentReviews = combinedReviews.slice(indexOfFirstReview, indexOfLastReview);
+    const totalPages = Math.ceil(combinedReviews.length / reviewsPerPage);
 
     useEffect(() => {
         const loadData = async () => {
@@ -54,10 +75,21 @@ function BusinessDetails() {
         }
     }, [dispatch, businessId]);
 
+    useEffect(() => {
+        if (reviews) {
+            Object.values(reviews).forEach(async (review) => {
+                const response = await fetch(`/api/auth/users/${review.userid}`);
+                if (response.ok) {
+                    const userData = await response.json();
+                    setReviewUsers(prev => ({ ...prev, [review.userid]: userData }));
+                }
+            });
+        }
+    }, [reviews]);
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
-
 
     const renderStars = (rating) => {
         const stars = [];
@@ -92,37 +124,52 @@ function BusinessDetails() {
 
     const isBusinessOpen = () => {
         if (!business?.opening_hours) return <p>Hours unavailable</p>;
-        
+
         // Get current time in local timezone
         const now = new Date();
         const currentHour = now.getHours();
         const currentMinutes = now.getMinutes();
         const currentTime = currentHour * 60 + currentMinutes;
-        
+
         // Parse business hours for today
         const today = now.getDay();
         const todayHours = business.opening_hours.periods[today];
-        
+
         if (todayHours) {
-            const openTime = parseInt(todayHours.open.time.slice(0, 2)) * 60 + 
-                            parseInt(todayHours.open.time.slice(2));
-            const closeTime = parseInt(todayHours.close.time.slice(0, 2)) * 60 + 
-                             parseInt(todayHours.close.time.slice(2));
-                             
+            const openTime = parseInt(todayHours.open.time.slice(0, 2)) * 60 +
+                parseInt(todayHours.open.time.slice(2));
+            const closeTime = parseInt(todayHours.close.time.slice(0, 2)) * 60 +
+                parseInt(todayHours.close.time.slice(2));
+
             const isOpen = currentTime >= openTime && currentTime < closeTime;
-            
-            return isOpen ? 
-                <span className="status-open">Open</span> : 
+
+            return isOpen ?
+                <span className="status-open">Open</span> :
                 <span className="status-closed">Closed</span>;
         }
-        
+
         return <p>Hours unavailable</p>;
     };
-    
 
-    const handleReviewButtonClick = () => {
-        navigate(`/businesses/${businessId}/reviews`)
-    }
+    const Pagination = () => {
+        return (
+            <div className="pagination-controls">
+                <button
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+                <span>Page {currentPage} of {totalPages}</span>
+                <button
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </button>
+            </div>
+        );
+    };
 
     return (
         <div className="business-details-container">
@@ -154,7 +201,6 @@ function BusinessDetails() {
                     className="business-details-review-button"
                 />
             </div>
-
             {business && (
                 <div className="business-details-info">
                     <div className="business-details-location">
@@ -171,29 +217,27 @@ function BusinessDetails() {
             )}
             {business && (
                 <div className="business-details-reviews">
-                    {reviews && Object.values(reviews).map((review, index) => (
+                    {currentReviews.map((review, index) => (
                         <div key={index} className="business-details-review-item">
-                            <div className="business-details-review-name">{review.author_name}</div>
-                            <div className="business-details-review-stars">{renderStars(review.stars)}</div>
-                            <div className="business-details-review-date">{new Date(review.createdAt).toLocaleDateString('en-US', {
-                                month: 'long',
-                                day: 'numeric',
-                                year: 'numeric'
-                            })}</div>
-                            <div className="business-details-review-message">{review.message}</div>
+                            <div className="business-details-review-name">
+                                {review.authorName}
+                            </div>
+                            <div className="business-details-review-stars">
+                                {renderStars(review.stars)}
+                            </div>
+                            <div className="business-details-review-date">
+                                {new Date(review.createdAt).toLocaleDateString('en-US', {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                })}
+                            </div>
+                            <div className="business-details-review-message">
+                                {review.message}
+                            </div>
                         </div>
                     ))}
-                    {/* <div className="pagination">
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <button
-                                key={i + 1}
-                                onClick={() => setCurrentPage(i + 1)}
-                                className={`page-button ${currentPage === i + 1 ? 'active' : ''}`}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-                    </div> */}
+                    <Pagination />
                 </div>
             )}
         </div>
