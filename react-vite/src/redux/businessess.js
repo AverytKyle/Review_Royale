@@ -116,7 +116,6 @@ export const createNewBusiness = (businessData) => async dispatch => {
     const formattedData = {
         userId: businessData.userId,
         name: businessData.name,
-        email: businessData.email,
         phoneNumber: businessData.phoneNumber,
         website: businessData.website,
         addressLineOne: businessData.addressLineOne,
