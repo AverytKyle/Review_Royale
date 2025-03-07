@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IoPersonOutline } from "react-icons/io5";
 import { thunkLogout } from "../../redux/session";
+import { NavLink } from "react-router-dom";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
+import { getCurrentUserBusinesses } from "../../redux/businessess";
 import './ProfileButton.css';
 
 function ProfileButton() {
@@ -40,6 +42,11 @@ function ProfileButton() {
     closeMenu();
   };
 
+  const handleManageBus = () => {
+    dispatch(getCurrentUserBusinesses());
+    closeMenu();
+  }
+
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
@@ -51,8 +58,10 @@ function ProfileButton() {
         {user ? (
           <div>
             <div className="user-info">
-              <p>Hello, {user.firstName}</p>
-              <p>{user.email}</p>
+              <p>{user.firstName} {user.lastName}</p>
+            </div>
+            <div className="manage-businesses">
+              <NavLink to={"/my-businesses"} onClick={handleManageBus}>Manage Businesses</NavLink>
             </div>
             <div>
               <button className="profile-logout" onClick={logout}>Log Out</button>

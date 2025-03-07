@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createNewBusiness } from "../../redux/businessess";
@@ -7,6 +7,7 @@ import "./CreateBusiness.css";
 const CreateBusiness = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const userId = useSelector((state) => state.session.user.id)
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [website, setWebsite] = useState("");
@@ -17,27 +18,24 @@ const CreateBusiness = () => {
     const [zip, setZip] = useState("");
     const [, setErrors] = useState([]);
 
-    useEffect(() => {
-        dispatch(createNewBusiness())
-    }, [dispatch])
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors([]);
 
         const newBusiness = {
-            name,
-            phoneNumber,
-            website,
-            addressLineOne,
-            addressLineTwo,
-            city,
-            state,
-            zip
+            userId: userId,
+            name: name,
+            phoneNumber: phoneNumber,
+            website: website,
+            addressLineOne: addressLineOne,
+            addressLineTwo: addressLineTwo,
+            city: city,
+            state: state,
+            zip: zip
         }
 
         const createdBusiness = await dispatch(createNewBusiness(newBusiness));
-
+        if (createdBusiness) navigate(`/businesses/${createdBusiness.id}`)
     }
 
     return (
@@ -90,7 +88,6 @@ const CreateBusiness = () => {
                         value={addressLineTwo}
                         onChange={(e) => setAddressLineTwo(e.target.value)}
                         placeholder="Address cont."
-                        required
                     />
                 </div>
                 <div className="create-business-location">

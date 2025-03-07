@@ -144,7 +144,6 @@ export const updateBusiness = (businessId, businessData) => async dispatch => {
     const formattedData = {
         userId: businessData.userId,
         name: businessData.name,
-        email: businessData.email,
         phoneNumber: businessData.phoneNumber,
         website: businessData.website,
         addressLineOne: businessData.addressLineOne,
@@ -213,9 +212,14 @@ const businessesReducer = (state = initialState, action) => {
         }
         case CREATE: {
             const newState = { ...state };
-            newState.Businesses[action.payload.id] = action.payload;
-            return newState
-        }
+            if (action.payload) {
+                newState.Businesses = {
+                    ...newState.Businesses,
+                    [action.payload.id]: action.payload
+                };
+            }
+            return newState;
+        }        
         case UPDATE: {
             const newState = { ...state };
             newState.Businesses[action.payload.id] = action.payload;

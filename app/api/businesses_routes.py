@@ -38,8 +38,7 @@ def create_business():
     data = request.get_json()
     userId = data.get('userId')
     name = data.get('name')
-    email = data.get('email')
-    phonenumber = data.get('phonenumber')
+    phoneNumber = data.get('phoneNumber')
     website = data.get('website')
     addressLineOne = data.get('addressLineOne')
     addressLineTwo = data.get('addressLineTwo')
@@ -50,10 +49,7 @@ def create_business():
     if not name:
         return jsonify({"message": "Name is required"}), 400
     
-    if not email:
-        return jsonify({"message": "Email is required"}), 400
-    
-    if not phonenumber:
+    if not phoneNumber:
         return jsonify({"message": "Phone number is required"}), 400
     
     if not website:
@@ -74,8 +70,7 @@ def create_business():
     business = Business(
         userId=userId,
         name=name,
-        email=email,
-        phonenumber=phonenumber,
+        phoneNumber=phoneNumber,
         website=website,
         addressLineOne=addressLineOne,
         addressLineTwo=addressLineTwo,
@@ -101,8 +96,7 @@ def update_business(businessId):
     data = request.get_json()
     
     business.name = data.get('name', business.name)
-    business.email = data.get('email', business.email)
-    business.phonenumber = data.get('phonenumber', business.phonenumber)
+    business.phoneNumber = data.get('phoneNumber', business.phoneNumber)
     business.website = data.get('website', business.website)
     business.addressLineOne = data.get('addressLineOne', business.addressLineOne)
     business.addressLineTwo = data.get('addressLineTwo', business.addressLineTwo)
