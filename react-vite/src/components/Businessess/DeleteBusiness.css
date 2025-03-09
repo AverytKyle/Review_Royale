@@ -1,0 +1,56 @@
+.delete-business-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    height: 200px;
+    padding: 20px;
+    background-color: #181F1C;
+}
+
+.delete-business-title {
+    color: #315C2B;
+    text-shadow: 
+    -1px -1px 0 #9EA93F,
+    1px -1px 0 #9EA93F,
+    -1px 1px 0 #9EA93F,
+    1px 1px 0 #9EA93F;
+}
+
+.delete-business-button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.delete-business-yes-button {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14pt;
+}
+
+.delete-business-yes-button:hover {
+    background-color: rgb(172, 48, 48);
+}
+
+.delete-business-no-button {
+    background-color: gray;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14pt;
+}
+
+.delete-business-no-button:hover {
+    background-color: #53575a;
+}

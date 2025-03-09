@@ -139,7 +139,7 @@ function Navigation() {
     <nav className="nav-bar-container">
       <div className="profile-section">
         <div className="nav-title">
-          <h1>Review Royale</h1>
+          <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Review Royale</h1>
         </div>
         <div className="nav-search-container">
           <div className="nav-category-button">

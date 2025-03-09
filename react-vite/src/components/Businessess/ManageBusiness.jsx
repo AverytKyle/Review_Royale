@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUserBusinesses } from "../../redux/businessess";
 import { getReviewsByBusiness } from "../../redux/reviews";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import DeleteBusiness from "./DeleteBusiness";
 import './ManageBusiness.css';
 
 const ManageBusinesses = () => {
@@ -100,7 +101,7 @@ const ManageBusinesses = () => {
                                     <OpenModalMenuItem
                                         itemText="Delete"
                                         onItemClick={() => setShowModal(true)}
-                                        // modalComponent={<DeleteSpotModal spotId={spot.id} />}
+                                        modalComponent={<DeleteBusiness businessId={business.id} />}
                                     />
                                 </button>
                             </div>
