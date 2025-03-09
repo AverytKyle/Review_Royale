@@ -6,6 +6,7 @@ import MapContainer from '../components/Maps/MapContainer';
 import LandingPage from '../components/LandingPage/LandingPage';
 import CreateBusiness from '../components/Businessess/CreateBusiness';
 import ManageBusinesses from '../components/Businessess/ManageBusiness';
+import UpdateBusiness from '../components/Businessess/UpdateBusiness';
 import Layout from './Layout';
 
 export const router = createBrowserRouter([
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "/my-businesses",
         element: <ManageBusinesses />,
+      },
+      {
+        path: "/businesses/:businessId/edit",
+        element: <UpdateBusiness />,
       },
       {
         path: "/maps",

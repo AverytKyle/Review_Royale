@@ -142,7 +142,6 @@ export const createNewBusiness = (businessData) => async dispatch => {
 
 export const updateBusiness = (businessId, businessData) => async dispatch => {
     const formattedData = {
-        userId: businessData.userId,
         name: businessData.name,
         phoneNumber: businessData.phoneNumber,
         website: businessData.website,
@@ -164,7 +163,7 @@ export const updateBusiness = (businessId, businessData) => async dispatch => {
     if (response.ok) {
         const business = await response.json();
         dispatch(update_business(business));
-        return business
+        return business;
     }
 }
 
@@ -222,7 +221,12 @@ const businessesReducer = (state = initialState, action) => {
         }        
         case UPDATE: {
             const newState = { ...state };
-            newState.Businesses[action.payload.id] = action.payload;
+            if (action.payload) {
+                newState.Businesses = {
+                    ...newState.Businesses,
+                    [action.payload.id]: action.payload
+                };
+            }
             return newState;
         }
         case DELETE: {

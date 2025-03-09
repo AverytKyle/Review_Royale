@@ -2,7 +2,8 @@
 import { csrfFetch } from "./csrf";
 
 const LOAD = 'reviews/LOAD';
-const LOAD_BUSINESS_REVIEWS = 'reviews/LOAD_BUSINESS_REVIEWS'
+const LOAD_BY_ID = 'reviews/LOAD_BY_ID';
+const LOAD_BUSINESS_REVIEWS = 'reviews/LOAD_BUSINESS_REVIEWS';
 const LOAD_GOOGLE_REVIEWS = 'reviews/LOAD_GOOGLE_REVIEWS';
 const CREATE_REVIEW = 'reviews/CREATE_REVIEW';
 const DELETE_REVIEW = 'reviews/DELETE_REVIEW';
@@ -12,6 +13,11 @@ const loadReviews = reviews => ({
     type: LOAD,
     reviews
 });
+
+const loadById = review => ({
+    type: LOAD_BY_ID,
+    review
+})
 
 const loadBusinessReviews = reviews => ({
     type: LOAD_BUSINESS_REVIEWS,
@@ -46,6 +52,16 @@ export const getAllReviews = () => async dispatch => {
             dispatch(loadReviews(reviews));
             return reviews
         }
+}
+
+export const getReviewById = (reviewId) => async dispatch => {
+    const response = await csrfFetch(`/api/reviews/${reviewId}`)
+
+    if (response.ok) {
+        const review = await response.json();
+        dispatch(loadById(review));
+        return review;
+    }
 }
 
 export const getReviewsByBusiness = (businessId) => async dispatch => {
