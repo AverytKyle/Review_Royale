@@ -7,6 +7,7 @@ import LandingPage from '../components/LandingPage/LandingPage';
 import CreateBusiness from '../components/Businessess/CreateBusiness';
 import ManageBusinesses from '../components/Businessess/ManageBusiness';
 import UpdateBusiness from '../components/Businessess/UpdateBusiness';
+import ManageReviews from '../components/Reviews/ManageReviews';
 import Layout from './Layout';
 
 export const router = createBrowserRouter([
@@ -34,8 +35,8 @@ export const router = createBrowserRouter([
         element: <UpdateBusiness />,
       },
       {
-        path: "/maps",
-        element: <MapContainer />,
+        path: "/my-reviews",
+        element: <ManageReviews />,
       },
       {
         path: "login",

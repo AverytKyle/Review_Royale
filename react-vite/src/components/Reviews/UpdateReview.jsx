@@ -1,16 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useModal } from '../../context/Modal';
-import { getPlaceById } from "../../redux/businessess";
-import { getAllPlaceReviews, createReview } from "../../redux/reviews";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
-import './CreateReviewModal.css'
+import { updateReview, getReviewById, getAllReviews } from '../../redux/reviews';
+import { getBusinessById, getPlaceById } from '../../redux/businessess';
 
-function CreateReviewModal({ businessId }) {
+const UpdateReview = ({ reviewId, businessId }) => {
     const sessionUser = useSelector((state) => state.session.user);
-    const business = useSelector(state => state.businesses.Businesses);
+    const reviewDetails = useSelector(state => state.reviews.Reviews[reviewId]);
     const { closeModal } = useModal();
     const dispatch = useDispatch();
     const [review, setReview] = useState('');
@@ -18,27 +17,40 @@ function CreateReviewModal({ businessId }) {
     const [hoveredStar, setHoveredStar] = useState(0);
     const [errors, setErrors] = useState({});
 
+    useEffect(() => {
+        if (reviewDetails) {
+            setReview(reviewDetails.message);
+            setStars(reviewDetails.stars);
+        }
+    }, [reviewDetails]);
+    
+
+    useEffect(() => {
+        const loadData = async () => {
+            if (businessId.length > 3) {
+                await dispatch(getPlaceById(businessId));
+            } else {
+                await dispatch(getBusinessById(businessId));
+            }
+        }
+        loadData();
+    }, [dispatch, businessId])
+
     const handleSubmit = (e) => {
         e.preventDefault();
         setErrors({});
 
-        // Check if the user is the owner of the spot
-        if (business.userID === sessionUser.id) {
-            // Prevent the form from being submitted
-            return;
-        }
-
         const reviewData = {
             userId: sessionUser.id,
+            businessId: businessId,
             message: review,
             stars: stars,
         }
 
-        return dispatch(createReview(reviewData, businessId))
+        return dispatch(updateReview(reviewId, reviewData))
             .then(() => {
                 closeModal();
-                dispatch(getPlaceById(businessId));
-                dispatch(getAllPlaceReviews(businessId));
+                dispatch(getAllReviews());
             })
     };
 
@@ -58,7 +70,7 @@ function CreateReviewModal({ businessId }) {
 
     return (
         <div className='create-review-modal-container' style={{ height: modalHeight }}>
-            <h1 className='create-review-modal-title'>Create a Review!</h1>
+            <h1 className='create-review-modal-title'>Update Review</h1>
             <form className='create-review-modal-form'>
                 {errors.review && <p className="errors" style={{ color: 'red', margin: '5px 0' }}>{errors.review}</p>}
                 <label>
@@ -88,4 +100,4 @@ function CreateReviewModal({ businessId }) {
     );
 }
 
-export default CreateReviewModal;
+export default UpdateReview;

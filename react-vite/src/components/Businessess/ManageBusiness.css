@@ -35,6 +35,7 @@
 .manage-business-name {
     font-size: 15pt;
 }
+
 .manage-business-address-container {
     display: flex;
     flex-direction: column;

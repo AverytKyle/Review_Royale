@@ -1,0 +1,41 @@
+.manage-reviews-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 7%;
+}
+
+.manage-reviews-title {
+    font-weight: bold;
+    font-size: 40pt;
+}
+
+.manage-reviews-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.manage-reviews-card {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    border: 1px solid red;
+}
+
+.manage-reviews-details {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+}
+
+.manage-reviews-business-name {
+    font-size: 25pt;
+}
+
+.manage-reviews-review-text {
+    overflow-wrap: break-word;
+    max-width: 100%;
+}

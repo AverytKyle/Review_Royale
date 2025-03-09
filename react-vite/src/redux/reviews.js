@@ -46,12 +46,12 @@ const update_review = review => ({
 
 export const getAllReviews = () => async dispatch => {
     const response = await csrfFetch(`/api/reviews`);
-    
-        if (response.ok) {
-            const reviews = await response.json();
-            dispatch(loadReviews(reviews));
-            return reviews
-        }
+
+    if (response.ok) {
+        const reviews = await response.json();
+        dispatch(loadReviews(reviews));
+        return reviews
+    }
 }
 
 export const getReviewById = (reviewId) => async dispatch => {
@@ -66,7 +66,7 @@ export const getReviewById = (reviewId) => async dispatch => {
 
 export const getReviewsByBusiness = (businessId) => async dispatch => {
     const response = await csrfFetch(`/api/reviews/business/${businessId}`);
-    
+
     if (response.ok) {
         const reviews = await response.json();
         dispatch(loadBusinessReviews(reviews));
@@ -78,14 +78,14 @@ export const getPlaceReviews = (placeId) => async dispatch => {
     const mapDiv = document.createElement('div');
     mapDiv.style.display = 'none';
     document.body.appendChild(mapDiv);
-    
+
     const map = new google.maps.Map(mapDiv, {
         center: { lat: 0, lng: 0 },
         zoom: 2
     });
 
     const service = new google.maps.places.PlacesService(map);
-    
+
     const getAllDetails = async () => {
         const request = {
             placeId: placeId,
@@ -109,7 +109,7 @@ export const getPlaceReviews = (placeId) => async dispatch => {
 
     const reviews = await getAllDetails();
     document.body.removeChild(mapDiv);
-    
+
     const reviewsData = {
         GoogleReviews: reviews.reduce((acc, review, index) => {
             acc[index] = {
@@ -123,7 +123,7 @@ export const getPlaceReviews = (placeId) => async dispatch => {
             };
             return acc;
         }, {})
-    };    
+    };
 
     dispatch(loadGoogleReviews(reviewsData));
     return reviewsData;
@@ -134,10 +134,10 @@ export const getAllPlaceReviews = (businessId) => async dispatch => {
 
     // Get reviews from your database
     const dbReviews = await dispatch(getReviewsByBusiness(stringId));
-    
+
     // Get reviews from Google Places API
     const googleReviews = await dispatch(getPlaceReviews(businessId));
-    
+
     return {
         dbReviews,
         googleReviews
@@ -160,7 +160,7 @@ export const createReview = (reviewData, businessId) => async dispatch => {
         },
         body: JSON.stringify(formattedData)
     });
-   
+
     if (response.ok) {
         const newReview = await response.json();
         dispatch(create_review(newReview));
@@ -191,10 +191,10 @@ export const updateReview = (reviewId, reviewData) => async dispatch => {
 
 export const deleteReview = (reviewId) => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${reviewId}`, {
-            method: 'DELETE'
-        });
-        dispatch(delete_review(reviewId));
-        return response;
+        method: 'DELETE'
+    });
+    dispatch(delete_review(reviewId));
+    return response;
 }
 
 const initialState = {
@@ -244,7 +244,12 @@ const reviewsReducer = (state = initialState, action) => {
         }
         case UPDATE_REVIEW: {
             const newState = { ...state };
-            newState.Reviews[action.payload.id] = action.payload;
+            if (!newState.Reviews) {
+                newState.Reviews = {};
+            }
+            if (action.payload && action.payload.id) {
+                newState.Reviews[action.payload.id] = action.payload;
+            }
             return newState;
         }
         case DELETE_REVIEW: {

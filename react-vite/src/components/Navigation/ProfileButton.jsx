@@ -7,6 +7,7 @@ import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import { getCurrentUserBusinesses } from "../../redux/businessess";
+import { getAllReviews } from "../../redux/reviews";
 import './ProfileButton.css';
 
 function ProfileButton() {
@@ -47,6 +48,11 @@ function ProfileButton() {
     closeMenu();
   }
 
+  const handleManageReviews = () => {
+    dispatch(getAllReviews());
+    closeMenu();
+  }
+
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
@@ -62,6 +68,9 @@ function ProfileButton() {
             </div>
             <div className="manage-businesses">
               <NavLink to={"/my-businesses"} onClick={handleManageBus}>Manage Businesses</NavLink>
+            </div>
+            <div className="manage-reviews">
+              <NavLink to={"/my-reviews"} onClick={handleManageReviews}>Manage Reviews</NavLink>
             </div>
             <div>
               <button className="profile-logout" onClick={logout}>Log Out</button>
