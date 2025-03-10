@@ -21,7 +21,15 @@
     display: flex;
     flex-direction: column;
     width: 80%;
-    border: 1px solid red;
+    border: 1px solid black;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manage-reviews-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 }
 
 .manage-reviews-details {
@@ -37,5 +45,29 @@
 
 .manage-reviews-review-text {
     overflow-wrap: break-word;
+    font-size: 15pt;
     max-width: 100%;
+}
+
+.manage-reviews-stars {
+    font-size: 15pt;
+}
+
+.manage-reviews-delete-button {
+    padding: 10px 20px;
+    font-size: 10pt;
+    font-weight: bold;
+    width: 100px;
+    border-radius: 4px;
+    background-color: #181F1C;
+    color: #9EA93F;
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.manage-reviews-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }

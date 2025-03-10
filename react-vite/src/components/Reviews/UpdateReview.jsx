@@ -4,7 +4,7 @@ import { useModal } from '../../context/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
-import { updateReview, getReviewById, getAllReviews } from '../../redux/reviews';
+import { updateReview, getAllReviews } from '../../redux/reviews';
 import { getBusinessById, getPlaceById } from '../../redux/businessess';
 
 const UpdateReview = ({ reviewId, businessId }) => {

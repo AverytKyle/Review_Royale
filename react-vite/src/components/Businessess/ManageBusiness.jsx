@@ -11,7 +11,7 @@ const ManageBusinesses = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const businesses = useSelector((state) => state.businesses.Businesses)
-    const [reviewsData, setReviewsData] = useState({});
+    const [, setReviewsData] = useState({});
 
     useEffect(() => {
         const loadData = async () => {
@@ -27,40 +27,6 @@ const ManageBusinesses = () => {
         };
         loadData();
     }, [dispatch]);
-
-    // const calculateAverageRating = (businessId) => {
-    //     const business = businesses[businessId];
-    //     const reviewConnections = business?.reviews || [];
-        
-    //     console.log("Business reviews for debugging:", business.reviews);
-    //     // This will show us exactly what review data we have access to through the business object
-        
-    //     if (!reviewConnections.length) return 0;
-        
-    //     const sum = reviewConnections.reduce((acc, connection) => {
-    //         // Let's see what each connection contains
-    //         console.log("Review connection:", connection);
-    //         return acc + connection.stars;
-    //     }, 0);
-        
-    //     return (sum / reviewConnections.length).toFixed(1);
-    // };
-    
-
-    // // console.log("reviewData:", reviewsData)
-
-    // const renderStars = (rating) => {
-    //     const stars = [];
-    //     const roundedRating = Math.round(rating);
-    //     for (let i = 1; i <= 5; i++) {
-    //         stars.push(
-    //             <span key={i} className={i <= roundedRating ? "filled-star" : "empty-star"}>
-    //                 ★
-    //             </span>
-    //         );
-    //     }
-    //     return stars;
-    // };
 
     if (!businesses) return <div>Loading...</div>;
 
@@ -80,10 +46,6 @@ const ManageBusinesses = () => {
                             <div className="manage-business-name">
                                 <h3>{business.name}</h3>
                             </div>
-                            {/* <div className="manage-business-rating">
-                                <div className="manage-business-stars">{renderStars(calculateAverageRating(business.id) || 0)}</div>
-                                <div className="manage-business-rating-value">{calculateAverageRating(business.id)} ({business.reviews?.length || 0} reviews)</div>
-                            </div> */}
                             <div className="manage-business-address-container">
                                 <div className="manage-business-address">
                                     <p>{business.addressLineOne}</p>

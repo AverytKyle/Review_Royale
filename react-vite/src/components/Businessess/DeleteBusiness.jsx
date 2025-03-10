@@ -26,8 +26,8 @@ const DeleteBusiness = ({ businessId }) => {
         <div className='delete-business-container'>
             <h1 className='delete-business-title'>Confirm Delete</h1>
             <div className='delete-business-button-container'>
-                <button className='delete-business-yes-button' onClick={handleClick}>Yes (Delete Business)</button>
-                <button className='delete-business-no-button' onClick={handleCancel}>No (Cancel)</button>
+                <button className='delete-business-yes-button' onClick={handleClick}>Delete</button>
+                <button className='delete-business-no-button' onClick={handleCancel}>Cancel</button>
             </div>
         </div>
         

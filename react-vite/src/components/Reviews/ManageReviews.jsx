@@ -88,7 +88,7 @@ const ManageReviews = () => {
                                             modalComponent={<UpdateReview reviewId={review.id} businessId={businessNames[businessKey]}/>}
                                         />
                                     </button>
-                                    <button className="delete-button">
+                                    <button className="manage-reviews-delete-button">
                                         <OpenModalMenuItem
                                             itemText="Delete"
                                             onItemClick={() => setShowModal(true)}

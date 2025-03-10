@@ -2,8 +2,9 @@
     padding: 20px;
     border-radius: 8px;
     width: 400px;
-    height: 300px;
+    height: 350px;
     background-color: white;
+    border: 1px solid black;
 }
 
 .create-review-modal-title {
@@ -36,6 +37,7 @@
 
 .create-review-modal-submit-button {
     padding: 10px 20px;
+    margin-top: -5px !important;
     font-size: 20pt;
     font-weight: bold;
     border-radius: 4px;
