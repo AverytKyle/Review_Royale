@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecentReviews } from "../../redux/reviews";
@@ -11,9 +11,9 @@ function LandingPage() {
     const recentReviews = useSelector(state => Object.values(state.reviews.Reviews));
     const [businessNames, setBusinessNames] = useState({});
     const [categories, setCategories] = useState([]);
-    const [reviews, setReviews] = useState([]);
     const [usernames, setUsernames] = useState({});
     const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+    const fetchedBusinesses = useRef(new Set());
 
     useEffect(() => {
         dispatch(getRecentReviews());
@@ -21,29 +21,34 @@ function LandingPage() {
 
     useEffect(() => {
         const loadBusinessNames = async () => {
-            if (recentReviews) {
-                for (const review of Object.values(recentReviews)) {
-                    const businessInfo = review.businesses[0];
-
-                    if (businessInfo.businessId) {
-                        const business = await dispatch(getBusinessById(businessInfo.businessId));
-                        setBusinessNames(prev => ({
-                            ...prev,
-                            [businessInfo.businessId]: business.name
-                        }));
-                    } else if (businessInfo.googleStoreId) {
-                        const place = await dispatch(getPlaceById(businessInfo.googleStoreId));
-                        setBusinessNames(prev => ({
-                            ...prev,
-                            [businessInfo.googleStoreId]: place.name
-                        }));
-                    }
+            if (!recentReviews) return;
+            
+            for (const review of Object.values(recentReviews)) {
+                const businessInfo = review.businesses[0];
+                const businessKey = businessInfo.businessId || businessInfo.googleStoreId;
+                
+                if (fetchedBusinesses.current.has(businessKey)) continue;
+                
+                fetchedBusinesses.current.add(businessKey);
+                
+                if (businessInfo.businessId) {
+                    const business = await dispatch(getBusinessById(businessInfo.businessId));
+                    setBusinessNames(prev => ({
+                        ...prev,
+                        [businessInfo.businessId]: business.name
+                    }));
+                } else if (businessInfo.googleStoreId) {
+                    const place = await dispatch(getPlaceById(businessInfo.googleStoreId));
+                    setBusinessNames(prev => ({
+                        ...prev,
+                        [businessInfo.googleStoreId]: place.name
+                    }));
                 }
             }
         };
-
+    
         loadBusinessNames();
-    }, [reviews, dispatch]);
+    }, [dispatch, recentReviews]);    
 
     useEffect(() => {
         const loadUsernames = async () => {

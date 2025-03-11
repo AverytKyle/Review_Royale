@@ -11,6 +11,7 @@ const ManageBusinesses = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const businesses = useSelector((state) => state.businesses.Businesses)
+    const [, setShowModal] = useState(false);
     const [, setReviewsData] = useState({});
 
     useEffect(() => {

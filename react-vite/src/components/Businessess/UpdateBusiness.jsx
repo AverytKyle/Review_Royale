@@ -7,7 +7,6 @@ import "./CreateBusiness.css";
 const UpdateBusiness = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const userId = useSelector((state) => state.session.user.id)
     const { businessId } = useParams();
     const business = useSelector(state => state.businesses.Businesses)
     const [name, setName] = useState("");

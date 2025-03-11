@@ -1,4 +1,5 @@
 import { csrfFetch } from './csrf';
+import { Loader } from '@googlemaps/js-api-loader';
 
 const LOAD_API_KEY = 'maps/LOAD_API_KEY';
 
@@ -13,6 +14,16 @@ export const getKey = () => async (dispatch) => {
   });
   const data = await res.json();
   dispatch(loadApiKey(data.googleMapsAPIKey));
+};
+
+export const initializeMaps = async (apiKey) => {
+  const loader = new Loader({
+      apiKey,
+      version: 'weekly',
+      libraries: ['places', 'marker']
+  });
+
+  return await loader.load();
 };
 
 const initialState = { key: null };

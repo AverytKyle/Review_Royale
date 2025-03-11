@@ -9,8 +9,8 @@ function BusinessMap({ business }) {
     useEffect(() => {
         if (!business?.geometry?.location || !window.google) return;
 
-        const map = new google.maps.Map(mapRef.current, {
-            mapId: 'YOUR_MAP_ID', // Add your Map ID from Google Cloud Console
+        const map = new window.google.maps.Map(mapRef.current, {
+            mapId: apiKey,
             center: {
                 lat: business.geometry.location.lat(),
                 lng: business.geometry.location.lng()
@@ -19,8 +19,8 @@ function BusinessMap({ business }) {
         });
 
         // Load marker library and create marker
-        google.maps.importLibrary("marker").then(() => {
-            const marker = new google.maps.marker.AdvancedMarkerElement({
+        window.google.maps.importLibrary("marker").then(() => {
+            new window.google.maps.marker.AdvancedMarkerElement({
                 map,
                 position: {
                     lat: business.geometry.location.lat(),
@@ -30,7 +30,7 @@ function BusinessMap({ business }) {
             });
         });
 
-    }, [business]);
+    }, [business, apiKey]);
 
     return <div ref={mapRef} style={{ width: '100%', height: '250px' }} />;
 }

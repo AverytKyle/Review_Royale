@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getKey } from "../../redux/maps";
 import { useDispatch, useSelector } from "react-redux";
-import { Loader } from '@googlemaps/js-api-loader';
+// import { Loader } from '@googlemaps/js-api-loader';
 import OpenModalButton from "../OpenModalButton";
 import ProfileButton from "./ProfileButton";
 import LoginFormModal from "../LoginFormModal";
@@ -19,7 +19,7 @@ function Navigation() {
   const [locationTerm, setLocationTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const mapsApiKey = useSelector(state => state.maps.key);
+  // const mapsApiKey = useSelector(state => state.maps.key);
   const sessionUser = useSelector((state) => state.session.user);
   const [categories, setCategories] = useState([]);
 
@@ -41,16 +41,13 @@ function Navigation() {
   }, []);
 
   useEffect(() => {
-    if (!mapsApiKey) return;
-
-    const loader = new Loader({
-      apiKey: mapsApiKey,
-      version: "weekly",
-      libraries: ["places"]
-    });
-
-    loader.load();
-  }, [mapsApiKey]);
+    const loadMapsApi = async () => {
+      const response = await fetch('/api/maps/key');
+      const data = await response.json();
+      dispatch({ type: 'maps/LOAD_API_KEY', payload: data.googleMapsAPIKey });
+    };
+    loadMapsApi();
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchCategories = async () => {

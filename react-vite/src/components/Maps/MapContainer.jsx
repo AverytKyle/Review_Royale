@@ -1,5 +1,3 @@
-/* global google */
-
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getKey } from '../../redux/maps';
@@ -28,33 +26,6 @@ function MapContainer() {
                 libraries: ["places"]
             });
         }
-
-        // loader.load().then(async () => {
-        //     const { Map } = await google.maps.importLibrary("maps");
-        //     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-            
-        //     navigator.geolocation.getCurrentPosition(async (position) => {
-        //         const userLocation = {
-        //             lat: position.coords.latitude,
-        //             lng: position.coords.longitude
-        //         };
-
-        //         const map = new Map(mapRef.current, {
-        //             center: userLocation,
-        //             zoom: 12,
-        //             mapId: '751c754df1680c1b'
-        //         });
-
-        //         const marker = new AdvancedMarkerElement({
-        //             map,
-        //             position: userLocation,
-        //             title: "You are here"
-        //         });
-
-        //         await getPlaceDetails(map);
-        //     });
-        // });
-
     }, [key]);
 
     return (
