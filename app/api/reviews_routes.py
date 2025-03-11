@@ -20,7 +20,7 @@ def get_recent_reviews():
     reviews = Reviews.query.order_by(Reviews.createdAt.desc()).limit(6).all()
     return jsonify({
         "reviews": [n.to_dict() for n in reviews]
-    })
+    }), 200
 
 # Get review by id
 @reviews_routes.route('/<int:reviewId>')

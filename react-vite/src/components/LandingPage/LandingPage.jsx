@@ -1,14 +1,68 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getRecentReviews } from "../../redux/reviews";
 import './LandingPage.css'
+import { getBusinessById, getPlaceById } from "../../redux/businessess";
 
 function LandingPage() {
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const recentReviews = useSelector(state => Object.values(state.reviews.Reviews));
+    const [businessNames, setBusinessNames] = useState({});
     const [categories, setCategories] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [usernames, setUsernames] = useState({});
     const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+
+    useEffect(() => {
+        dispatch(getRecentReviews());
+    }, [dispatch])
+
+    useEffect(() => {
+        const loadBusinessNames = async () => {
+            if (recentReviews) {
+                for (const review of Object.values(recentReviews)) {
+                    const businessInfo = review.businesses[0];
+
+                    if (businessInfo.businessId) {
+                        const business = await dispatch(getBusinessById(businessInfo.businessId));
+                        setBusinessNames(prev => ({
+                            ...prev,
+                            [businessInfo.businessId]: business.name
+                        }));
+                    } else if (businessInfo.googleStoreId) {
+                        const place = await dispatch(getPlaceById(businessInfo.googleStoreId));
+                        setBusinessNames(prev => ({
+                            ...prev,
+                            [businessInfo.googleStoreId]: place.name
+                        }));
+                    }
+                }
+            }
+        };
+
+        loadBusinessNames();
+    }, [reviews, dispatch]);
+
+    useEffect(() => {
+        const loadUsernames = async () => {
+            if (recentReviews) {
+                for (const review of Object.values(recentReviews)) {
+                    const response = await fetch(`/api/users/${review.userid}`);
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUsernames(prev => ({
+                            ...prev,
+                            [review.userid]: userData.username
+                        }));
+                    }
+                }
+            }
+        };
+
+        loadUsernames();
+    }, [recentReviews]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -19,17 +73,7 @@ function LandingPage() {
             }
         };
 
-        const fetchReviews = async () => {
-            const response = await fetch('/api/reviews/recent');
-            if (response.ok) {
-                const data = await response.json();
-                setReviews(data.reviews);
-            }
-        };
-
-
         fetchCategories();
-        fetchReviews();
     }, []);
 
     useEffect(() => {
@@ -46,6 +90,18 @@ function LandingPage() {
 
     const handleCategoryClick = () => {
         navigate(`/categories/${categories[currentCategoryIndex].id}`);
+    };
+
+    const renderStars = (rating) => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            stars.push(
+                <span key={i} className={`star ${i <= rating ? 'filled' : 'empty'}`}>
+                    {i <= rating ? '★' : '☆'}
+                </span>
+            );
+        }
+        return stars;
     };
 
     return (
@@ -66,16 +122,32 @@ function LandingPage() {
                     </div>
                 </div>
             )}
-            <div className="landing-page-recent-reviews">
+            <div className="landing-page-recent-reviews-container">
                 <h2>Recent Reviews</h2>
                 <div className="landing-page-reviews-grid">
-                    {reviews.map(review => (
-                        <div key={review.id} className="landing-page-review-card">
-                            <h3>{review.title}</h3>
-                            <p>{review.content}</p>
-                            <div className="landing-page-review-rating">Rating: {review.rating}</div>
-                        </div>
-                    ))}
+                    {Object.values((recentReviews)).map((review, index) => {
+                        const businessInfo = review.businesses[0];
+                        const businessKey = businessInfo?.businessId || businessInfo?.googleStoreId;
+
+                        return (
+                            <div key={index} className="landing-page-review-card">
+                                <div className="landing-page-review-details">
+                                    <div>
+                                        <h2 className="landing-page-review-business-name">{businessNames[businessKey] || 'Loading...'}</h2>
+                                    </div>
+                                    <div>
+                                        <p className="landing-page-review-username">{usernames[review.userid] || 'Loading...'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="landing-page-stars">{renderStars(review.stars)}</p>
+                                    </div>
+                                    <div>
+                                        <p className="landing-page-review-message">{review.message}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         </div>

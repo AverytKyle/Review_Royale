@@ -54,6 +54,19 @@ export const getAllReviews = () => async dispatch => {
     }
 }
 
+export const getRecentReviews = () => async dispatch => {
+    const response = await fetch(`/api/reviews/recent`);
+
+    if (response.ok) {
+        const data = await response.json();
+        const transformedData = {
+            Reviews: data.reviews
+        };
+        dispatch(loadReviews(transformedData));
+        return transformedData;
+    }
+}
+
 export const getReviewById = (reviewId) => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${reviewId}`)
 
@@ -143,8 +156,6 @@ export const getAllPlaceReviews = (businessId) => async dispatch => {
         googleReviews
     };
 };
-
-
 
 export const createReview = (reviewData, businessId) => async dispatch => {
     const formattedData = {

@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    margin-left: 30%;
+    margin-left: 20%;
     margin-top: 10%;
 }
 
@@ -67,32 +67,53 @@
     transform: scale(1.05);
 }
 
+.landing-page-recent-reviews-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25%;
+    width: 80%;
+    gap: 10px;
+}
+
 .landing-page-recent-reviews {
     margin-top: 100px;
     width: 100%;
 }
 
 .landing-page-reviews-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .landing-page-review-card {
+    display: flex;
+    flex-direction: column;
     background-color: white;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid black;
 }
 
-.landing-page-review-card h3 {
-    margin: 0 0 10px 0;
-    color: #333;
+.landing-page-review-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.landing-page-review-rating {
-    margin-top: 10px;
-    font-weight: bold;
-    color: #2196f3;
+.landing-page-review-business-name {
+    font-size: 20pt;
+}
+
+.landing-page-review-username {
+    font-size: 15pt;
+}
+
+.landing-page-review-message {
+    font-size: 18pt;
+}
+
+.landing-page-stars {
+    font-size: 15pt;
 }

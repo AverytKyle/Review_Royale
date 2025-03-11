@@ -12,7 +12,6 @@ const ManageReviews = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [, setShowModal] = useState(false);
     const [businessNames, setBusinessNames] = useState({});
-    const [placeNames, setPlaceNames] = useState({});
     const reviews = useSelector(state => state.reviews.Reviews);
 
     useEffect(() => {
@@ -73,7 +72,7 @@ const ManageReviews = () => {
                         const businessKey = businessInfo?.businessId || businessInfo?.googleStoreId;
 
                         return (
-                            <div key={review.id} className="manage-reviews-card">
+                            <div key={index} className="manage-reviews-card">
                                 <div className="manage-reviews-details">
                                     <h2 className="manage-reviews-business-name">{businessNames[businessKey] || 'Loading...'}</h2>
                                     <p className="manage-reviews-created">{new Date(review.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
