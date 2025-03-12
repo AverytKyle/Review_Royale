@@ -6,6 +6,8 @@ import "./SignupForm.css";
 
 function SignupFormModal() {
   const dispatch = useDispatch();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,6 +27,8 @@ function SignupFormModal() {
 
     const serverResponse = await dispatch(
       thunkSignup({
+        firstName,
+        lastName,
         email,
         username,
         password,
@@ -39,11 +43,11 @@ function SignupFormModal() {
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
+    <div className="signup-form-modal">
+      <h1 className="signup-title">Sign Up</h1>
       {errors.server && <p>{errors.server}</p>}
-      <form onSubmit={handleSubmit}>
-        <label>
+      <form className="signup-form" onSubmit={handleSubmit}>
+        <label className="input-label">
           Email
           <input
             type="text"
@@ -53,7 +57,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.email && <p>{errors.email}</p>}
-        <label>
+        <label className="input-label">
           Username
           <input
             type="text"
@@ -63,7 +67,27 @@ function SignupFormModal() {
           />
         </label>
         {errors.username && <p>{errors.username}</p>}
-        <label>
+        <label className="input-label">
+          First name
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+        </label>
+        {errors.first_name && <p>{errors.first_name}</p>}
+        <label className="input-label">
+          Last name
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </label>
+        {errors.last_name && <p>{errors.last_name}</p>}
+        <label className="input-label">
           Password
           <input
             type="password"
@@ -73,7 +97,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.password && <p>{errors.password}</p>}
-        <label>
+        <label className="input-label">
           Confirm Password
           <input
             type="password"
@@ -83,9 +107,9 @@ function SignupFormModal() {
           />
         </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit">Sign Up</button>
+        <button className="signup-button" type="submit">Sign Up</button>
       </form>
-    </>
+    </div>
   );
 }
 

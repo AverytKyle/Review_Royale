@@ -10,6 +10,7 @@ import businessesReducer from "./businessess";
 import reviewsReducer from "./reviews";
 import imagesReducer from "./images";
 import mapsReducer from "./maps";
+import usersReducer from "./users";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   reviews: reviewsReducer,
   images: imagesReducer,
   maps: mapsReducer,
+  users: usersReducer
 });
 
 let enhancer;

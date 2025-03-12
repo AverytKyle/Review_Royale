@@ -120,3 +120,28 @@ def delete_business(businessId):
     db.session.delete(business)
     db.session.commit()
     return jsonify({'message': 'Business successfully deleted'}), 200
+
+@businesses_routes.route('/search')
+def search_businesses():
+    search_term = request.args.get('term', '')
+    location = request.args.get('location', '')
+    
+    query = Business.query
+    
+    if search_term:
+        search_filter = (Business.name.ilike(f'%{search_term}%') |
+                        Business.city.ilike(f'%{search_term}%') |
+                        Business.state.ilike(f'%{search_term}%'))
+        query = query.filter(search_filter)
+    
+    if location:
+        location_filter = (Business.city.ilike(f'%{location}%') |
+                         Business.state.ilike(f'%{location}%') |
+                         Business.zip.ilike(f'%{location}%'))
+        query = query.filter(location_filter)
+    
+    businesses = query.all()
+    
+    return jsonify({
+        'businesses': [business.to_dict() for business in businesses]
+    }), 200

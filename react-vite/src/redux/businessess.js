@@ -175,6 +175,8 @@ export const deleteBusiness = (businessId) => async dispatch => {
     return response;
 }
 
+
+
 const initialState = {
     Businesses: {}
 }

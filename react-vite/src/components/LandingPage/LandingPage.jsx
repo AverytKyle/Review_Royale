@@ -4,16 +4,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { getRecentReviews } from "../../redux/reviews";
 import './LandingPage.css'
 import { getBusinessById, getPlaceById } from "../../redux/businessess";
+import { getUser } from "../../redux/users";
 
 function LandingPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const recentReviews = useSelector(state => Object.values(state.reviews.Reviews));
+    const recentReviews = useSelector(state => state.reviews.Reviews || []);
+    const users = useSelector(state => state.users);
     const [businessNames, setBusinessNames] = useState({});
     const [categories, setCategories] = useState([]);
     const [usernames, setUsernames] = useState({});
     const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
     const fetchedBusinesses = useRef(new Set());
+
+    const categoryImages = {
+        "Restaurant": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "Food": "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "Hotel": "https://plus.unsplash.com/premium_photo-1661964071015-d97428970584?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "Delivery": "https://plus.unsplash.com/premium_photo-1682088887477-4f63f185ba7e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    };
 
     useEffect(() => {
         dispatch(getRecentReviews());
@@ -22,15 +31,15 @@ function LandingPage() {
     useEffect(() => {
         const loadBusinessNames = async () => {
             if (!recentReviews) return;
-            
+
             for (const review of Object.values(recentReviews)) {
                 const businessInfo = review.businesses[0];
                 const businessKey = businessInfo.businessId || businessInfo.googleStoreId;
-                
+
                 if (fetchedBusinesses.current.has(businessKey)) continue;
-                
+
                 fetchedBusinesses.current.add(businessKey);
-                
+
                 if (businessInfo.businessId) {
                     const business = await dispatch(getBusinessById(businessInfo.businessId));
                     setBusinessNames(prev => ({
@@ -46,9 +55,9 @@ function LandingPage() {
                 }
             }
         };
-    
+
         loadBusinessNames();
-    }, [dispatch, recentReviews]);    
+    }, [dispatch, recentReviews]);
 
     useEffect(() => {
         const loadUsernames = async () => {
@@ -65,10 +74,10 @@ function LandingPage() {
                 }
             }
         };
-
+    
         loadUsernames();
     }, [recentReviews]);
-
+    
     useEffect(() => {
         const fetchCategories = async () => {
             const response = await fetch('/api/categories');
@@ -93,10 +102,6 @@ function LandingPage() {
         }
     }, [categories]);
 
-    const handleCategoryClick = () => {
-        navigate(`/categories/${categories[currentCategoryIndex].id}`);
-    };
-
     const renderStars = (rating) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
@@ -112,23 +117,31 @@ function LandingPage() {
     return (
         <div className="landing-page-container">
             {categories.length > 0 && (
-                <div className="landing-page-category-cycle">
-                    <h2 className="landing-page-category-title">Featured Category</h2>
-                    <div className="landing-page-category">
-                        <button
-                            className="landing-page-category-button"
-                            onClick={handleCategoryClick}
-                        >
-                            {categories[currentCategoryIndex].category}
-                        </button>
-                    </div>
-                    <div className="progress-bar">
-                        <div className="progress-fill"></div>
+                <div
+                    className="landing-page-category-cycle"
+                    style={{
+                        backgroundImage: `url(${categoryImages[categories[currentCategoryIndex].category]})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                    }}>
+                    <div className="category-content-overlay">
+                        <h2 className="landing-page-category-title">Featured Categories</h2>
+                        <div className="landing-page-category">
+                            <button
+                                className="landing-page-category-button"
+                                // onClick={handleCategoryClick}
+                            >
+                                {categories[currentCategoryIndex].category}
+                            </button>
+                        </div>
+                        <div className="progress-bar">
+                            <div className="progress-fill"></div>
+                        </div>
                     </div>
                 </div>
             )}
             <div className="landing-page-recent-reviews-container">
-                <h2>Recent Reviews</h2>
+                <h2 className="landing-page-recent-reviews-title">Recent Reviews</h2>
                 <div className="landing-page-reviews-grid">
                     {Object.values((recentReviews)).map((review, index) => {
                         const businessInfo = review.businesses[0];

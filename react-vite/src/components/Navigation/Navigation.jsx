@@ -64,13 +64,18 @@ function Navigation() {
     setSearchTerm(value);
 
     if (value.length >= 2) {
+      // Get local database results
+      const response = await fetch(`/api/businesses/search?term=${value}&location=${locationTerm}`);
+      const localResults = await response.json();
+
+      // Get Google Places results
       const { AutocompleteService } = await google.maps.importLibrary("places");
       const service = new AutocompleteService();
 
       const request = {
         input: value,
-        componentRestrictions: { country: 'us' }, // Optional: restrict to US
-        types: ['establishment'] // Focus on businesses
+        componentRestrictions: { country: 'us' },
+        types: ['establishment']
       };
 
       if (locationTerm) {
@@ -83,7 +88,18 @@ function Navigation() {
 
             service.getPlacePredictions(request, (predictions, status) => {
               if (status === google.maps.places.PlacesServiceStatus.OK) {
-                setSuggestions(predictions.slice(0, 5));
+                const combinedResults = [
+                  ...(localResults?.businesses || []).map(business => ({
+                    ...business,
+                    isLocal: true,
+                    structured_formatting: {
+                      main_text: business.name,
+                      secondary_text: `${business.addressLineOne}, ${business.city}, ${business.state}`
+                    }
+                  })),
+                  ...predictions.map(pred => ({ ...pred, isGoogle: true }))
+                ];
+                setSuggestions(combinedResults.slice(0, 8));
                 setShowSuggestions(true);
               }
             });
@@ -92,7 +108,18 @@ function Navigation() {
       } else {
         service.getPlacePredictions(request, (predictions, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
-            setSuggestions(predictions.slice(0, 5));
+            const combinedResults = [
+              ...(localResults?.businesses || []).map(business => ({
+                ...business,
+                isLocal: true,
+                structured_formatting: {
+                  main_text: business.name,
+                  secondary_text: `${business.addressLineOne}, ${business.city}, ${business.state}`
+                }
+              })),
+              ...predictions.map(pred => ({ ...pred, isGoogle: true }))
+            ];
+            setSuggestions(combinedResults.slice(0, 8));
             setShowSuggestions(true);
           }
         });
@@ -139,7 +166,7 @@ function Navigation() {
           <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Review Royale</h1>
         </div>
         <div className="nav-search-container">
-          <div className="nav-category-button">
+          {/* <div className="nav-category-button">
             <OpenModalButton
               buttonText="Select Category ▼"
               modalComponent={
@@ -149,7 +176,7 @@ function Navigation() {
                 />
               }
             />
-          </div>
+          </div> */}
           <div className="search-input-container" style={{ position: 'relative' }}>
             <input
               type="search"
@@ -158,13 +185,13 @@ function Navigation() {
               value={searchTerm}
               onChange={(e) => handleSearchInput(e.target.value)}
             />
-            <input
+            {/* <input
               type="search"
               className="nav-location-bar"
               placeholder="Location"
               value={locationTerm}
               onChange={(e) => setLocationTerm(e.target.value)}
-            />
+            /> */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="search-suggestions"
                 style={{
@@ -178,11 +205,13 @@ function Navigation() {
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                   zIndex: 1000
                 }}>
-                {suggestions.map((prediction) => (
+                {suggestions.map((result) => (
                   <div
-                    key={prediction.place_id}
+                    key={result.isLocal ? result.id : result.place_id}
                     className="suggestion-item"
-                    onClick={() => handleSuggestionClick(prediction)}
+                    onClick={() => result.isLocal ?
+                      navigate(`/businesses/${result.id}`) :
+                      handleSuggestionClick(result)}
                     style={{
                       padding: '10px',
                       cursor: 'pointer',
@@ -191,9 +220,11 @@ function Navigation() {
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
                   >
-                    <div>{prediction.structured_formatting.main_text}</div>
-                    <div style={{ fontSize: '0.8em', color: '#666' }}>
-                      {prediction.structured_formatting.secondary_text}
+                    <div className="suggestion-main-text">
+                      {result.structured_formatting.main_text}
+                    </div>
+                    <div className="suggestion-secondary-text">
+                      {result.structured_formatting.secondary_text}
                     </div>
                   </div>
                 ))}

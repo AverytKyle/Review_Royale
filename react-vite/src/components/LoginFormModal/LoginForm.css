@@ -1,6 +1,7 @@
 .login-form-modal {
     padding: 20px;
     border-radius: 8px;
+    background-color: white;
     width: 300px;
 }
 
@@ -25,8 +26,8 @@
 }
 
 .login-button, .demo-user {
-    background-color: #23588d;
-    color: white;
+    background-color: #181F1C;
+    color: #9EA93F;
     padding: 10px;
     border: none;
     border-radius: 4px;

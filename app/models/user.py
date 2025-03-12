@@ -14,6 +14,7 @@ class User(db.Model, UserMixin):
     lastName = db.Column(db.String(40), nullable=False)
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
+    password = db.Column(db.String(255), nullable=False)
     hashed_password = db.Column(db.String(255), nullable=False)
 
     reviews = db.relationship('Reviews', backref='users', lazy=True, cascade='all, delete-orphan')
@@ -35,5 +36,6 @@ class User(db.Model, UserMixin):
             'firstName': self.firstName,
             'lastName': self.lastName,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'password': self.password
         }

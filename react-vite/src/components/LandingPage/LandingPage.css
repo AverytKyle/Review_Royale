@@ -1,17 +1,13 @@
 .landing-page-container {
-    height: 80vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    margin-left: 20%;
-    margin-top: 10%;
 }
 
 .landing-page-category-cycle {
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    position: relative;
+    min-height: 300px;
+    width: 100%;
+    transition: background-image 0.5s ease;
 }
 
 .landing-page-category-title {
@@ -70,8 +66,9 @@
 .landing-page-recent-reviews-container {
     display: flex;
     flex-direction: column;
-    margin-top: 25%;
-    width: 80%;
+    margin-top: 10%;
+    margin-left: 20%;
+    width: 60%;
     gap: 10px;
 }
 
@@ -116,4 +113,22 @@
 
 .landing-page-stars {
     font-size: 15pt;
+}
+
+.category-content-overlay {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    color: white;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.landing-page-recent-reviews-title {
+    align-self: center;
+    padding-bottom: 20px;
+    font-size: 40pt;
 }
