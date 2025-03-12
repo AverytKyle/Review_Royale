@@ -1,16 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecentReviews } from "../../redux/reviews";
 import './LandingPage.css'
 import { getBusinessById, getPlaceById } from "../../redux/businessess";
-import { getUser } from "../../redux/users";
 
 function LandingPage() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useDispatch();
     const recentReviews = useSelector(state => state.reviews.Reviews || []);
-    const users = useSelector(state => state.users);
+    // const users = useSelector(state => state.users);
     const [businessNames, setBusinessNames] = useState({});
     const [categories, setCategories] = useState([]);
     const [usernames, setUsernames] = useState({});

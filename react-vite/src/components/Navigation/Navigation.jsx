@@ -9,19 +9,19 @@ import OpenModalButton from "../OpenModalButton";
 import ProfileButton from "./ProfileButton";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
-import CategoryModal from "./CategoryModal";
+// import CategoryModal from "./CategoryModal";
 import "./Navigation.css";
 
 function Navigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationTerm, setLocationTerm] = useState("");
+  const [locationTerm, ] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   // const mapsApiKey = useSelector(state => state.maps.key);
   const sessionUser = useSelector((state) => state.session.user);
-  const [categories, setCategories] = useState([]);
+  const [, setCategories] = useState([]);
 
   useEffect(() => {
     dispatch(getKey());
