@@ -73,6 +73,9 @@ const ManageBusinesses = () => {
                 ))}
 
             </div>
+            <div className="manage-business-create-button-container">
+                <button className="manage-business-create-button" onClick={() => navigate(`/businesses/new`)}>Create A New Business</button>
+            </div>
         </div>
 
     )

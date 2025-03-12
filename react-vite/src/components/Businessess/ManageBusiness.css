@@ -80,3 +80,26 @@
     -1px 1px 0 #9EA93F,
     1px 1px 0 #9EA93F;
 }
+
+.manage-business-create-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: auto;
+    padding: 10px;
+}
+
+.manage-business-create-button {
+    width: 200px;
+    height: 75px;
+    cursor: pointer;
+    font-size: 15pt;
+    font-weight: bold;
+    color: #315C2B;
+    background-color: #181F1C;
+    text-shadow: 
+    -1px -1px 0 #9EA93F,
+    1px -1px 0 #9EA93F,
+    -1px 1px 0 #9EA93F,
+    1px 1px 0 #9EA93F;
+}
