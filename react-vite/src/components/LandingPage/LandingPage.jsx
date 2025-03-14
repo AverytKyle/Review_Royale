@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecentReviews } from "../../redux/reviews";
 import './LandingPage.css'
-import { getBusinessById, getPlaceById } from "../../redux/businessess";
+import { getBusinessById, getPlaceById, getAllBusinesses } from "../../redux/businessess";
 
 function LandingPage() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const recentReviews = useSelector(state => state.reviews.Reviews || []);
-    // const users = useSelector(state => state.users);
+    // const businesses = useSelector(state => state.businesses.Businesses);
     const [businessNames, setBusinessNames] = useState({});
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState({});
     const [usernames, setUsernames] = useState({});
     const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
     const fetchedBusinesses = useRef(new Set());
@@ -73,10 +73,10 @@ function LandingPage() {
                 }
             }
         };
-    
+
         loadUsernames();
     }, [recentReviews]);
-    
+
     useEffect(() => {
         const fetchCategories = async () => {
             const response = await fetch('/api/categories');
@@ -113,6 +113,10 @@ function LandingPage() {
         return stars;
     };
 
+    const handleViewAllBusinesses = () => {
+        navigate('/businesses/all');
+    };
+
     return (
         <div className="landing-page-container">
             {categories.length > 0 && (
@@ -128,7 +132,7 @@ function LandingPage() {
                         <div className="landing-page-category">
                             <button
                                 className="landing-page-category-button"
-                                // onClick={handleCategoryClick}
+                            // onClick={handleCategoryClick}
                             >
                                 {categories[currentCategoryIndex].category}
                             </button>
@@ -165,6 +169,14 @@ function LandingPage() {
                             </div>
                         )
                     })}
+                </div>
+                <div className="landing-page-businesses-button-container">
+                    <button
+                        className="view-all-businesses-button"
+                        onClick={handleViewAllBusinesses}
+                    >
+                        View All Businesses
+                    </button>
                 </div>
             </div>
         </div>

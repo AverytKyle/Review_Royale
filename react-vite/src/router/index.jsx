@@ -9,6 +9,7 @@ import ManageBusinesses from '../components/Businessess/ManageBusiness';
 import UpdateBusiness from '../components/Businessess/UpdateBusiness';
 import ManageReviews from '../components/Reviews/ManageReviews';
 import Layout from './Layout';
+import AllBusinesses from '../components/Businessess/AllBusinesses';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: "/businesses/new",
         element: <CreateBusiness />,
+      },
+      {
+        path: "/businesses/all",
+        element: <AllBusinesses />,
       },
       {
         path: "/my-businesses",

@@ -54,14 +54,14 @@
     border: none;
     outline: none;
     padding: 10px 20px;
-    cursor: pointer;
+    /* cursor: pointer; */
     transition: all 0.3s ease;
 }
-
+/* 
 .landing-page-category-button:hover {
     color: #9EA93F;
     transform: scale(1.05);
-}
+} */
 
 .landing-page-recent-reviews-container {
     display: flex;
@@ -131,4 +131,18 @@
     align-self: center;
     padding-bottom: 20px;
     font-size: 40pt;
+}
+
+.view-all-businesses-button {
+    padding: 10px 20px;
+    font-size: 10pt;
+    font-weight: bold;
+    width: 200px;
+    height: 50px;
+    border-radius: 4px;
+    background-color: #181F1C;
+    color: #9EA93F;
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
 }

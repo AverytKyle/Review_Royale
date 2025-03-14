@@ -23,7 +23,7 @@ function CreateReviewModal({ businessId }) {
         setErrors({});
 
         // Check if the user is the owner of the spot
-        if (business.userID === sessionUser.id) {
+        if (business.userId === sessionUser.id) {
             // Prevent the form from being submitted
             return;
         }
