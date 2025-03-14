@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useModal } from '../../context/Modal';
 import { getPlaceById } from "../../redux/businessess";
-import { getAllPlaceReviews, createReview } from "../../redux/reviews";
+import { getAllPlaceReviews, createReview, getReviewsByBusiness } from "../../redux/reviews";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
@@ -11,12 +11,17 @@ import './CreateReviewModal.css'
 function CreateReviewModal({ businessId }) {
     const sessionUser = useSelector((state) => state.session.user);
     const business = useSelector(state => state.businesses.Businesses);
+    const reviews = useSelector(state => state.reviews.Reviews);
     const { closeModal } = useModal();
     const dispatch = useDispatch();
     const [review, setReview] = useState('');
     const [stars, setStars] = useState(0);
     const [hoveredStar, setHoveredStar] = useState(0);
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        dispatch(getReviewsByBusiness(businessId));
+    }, [dispatch, businessId]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -25,6 +30,13 @@ function CreateReviewModal({ businessId }) {
         // Check if the user is the owner of the spot
         if (business.userId === sessionUser.id) {
             // Prevent the form from being submitted
+            return;
+        }
+
+        const hasReviewed = Object.values(reviews).some(review => review.userid === sessionUser.id);
+    
+        if (business.userId === sessionUser.id || hasReviewed) {
+            setErrors({ review: "You cannot review this business" });
             return;
         }
 
