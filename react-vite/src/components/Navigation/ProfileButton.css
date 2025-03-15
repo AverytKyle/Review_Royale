@@ -46,3 +46,35 @@
     box-shadow: 0 2px 8px rgba(49, 92, 43, 0.3);
 }
 
+.manage-businesses,
+.manage-reviews {
+    width: 100px;
+    color: #315C2B;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border-bottom: 2px solid black;
+}
+
+.profile-dropdown a:active,
+.profile-dropdown a:link,
+.profile-dropdown a:visited {
+    color: #315C2B;
+    text-decoration: none;
+}
+
+.profile-logout {
+    width: 100px;
+    height: 25px;
+    margin-top: 5px;
+    background-color: #315C2B;
+    color: #9EA93F;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}

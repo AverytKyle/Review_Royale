@@ -8,6 +8,7 @@ const LOAD_GOOGLE_REVIEWS = 'reviews/LOAD_GOOGLE_REVIEWS';
 const CREATE_REVIEW = 'reviews/CREATE_REVIEW';
 const DELETE_REVIEW = 'reviews/DELETE_REVIEW';
 const UPDATE_REVIEW = 'reviews/UPDATE_REVIEW';
+const RESET_REVIEWS = 'reviews/RESET_REVIEWS';
 
 const loadReviews = reviews => ({
     type: LOAD,
@@ -42,6 +43,10 @@ const delete_review = reviewId => ({
 const update_review = review => ({
     type: UPDATE_REVIEW,
     review
+});
+
+export const resetReviews = () => ({
+    type: RESET_REVIEWS
 });
 
 export const getAllReviews = () => async dispatch => {
@@ -263,6 +268,8 @@ const reviewsReducer = (state = initialState, action) => {
             }
             return newState;
         }
+        case RESET_REVIEWS:
+            return initialState;
         case DELETE_REVIEW: {
             const newState = { ...state };
             delete newState.Reviews[action.reviewId]

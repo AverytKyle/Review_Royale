@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createNewBusiness } from "../../redux/businessess";
+import { resetReviews } from "../../redux/reviews";
 import "./CreateBusiness.css";
 
 const CreateBusiness = () => {
@@ -35,7 +36,10 @@ const CreateBusiness = () => {
         }
 
         const createdBusiness = await dispatch(createNewBusiness(newBusiness));
-        if (createdBusiness) navigate(`/businesses/${createdBusiness.id}`)
+        if (createdBusiness) {
+            dispatch(resetReviews());
+            navigate(`/businesses/${createdBusiness.id}`)
+        }
     }
 
     return (

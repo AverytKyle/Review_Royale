@@ -18,7 +18,7 @@ function BusinessDetails() {
     const [, setShowModal] = useState(false);
     const [reviewUsers, setReviewUsers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const reviewsPerPage = 10;
+    const reviewsPerPage = 5;
 
     const combinedReviews = [
         ...(reviews ? Object.values(reviews).map(review => ({
@@ -171,6 +171,48 @@ function BusinessDetails() {
         );
     };
 
+    const ratingLogic = () => {
+        let dbReviews = [];
+        let googleReviewsArr = [];
+        
+        // Get database reviews if they exist
+        if (reviews) {
+            dbReviews = Object.values(reviews);
+        }
+        
+        // Get Google reviews if they exist
+        if (googleReviews) {
+            googleReviewsArr = Object.values(googleReviews);
+        }
+        
+        // Combine all reviews
+        const allReviews = [...dbReviews, ...googleReviewsArr];
+        
+        // If there are no reviews, return default values
+        if (allReviews.length === 0) {
+            return {
+                totalReviews: 0,
+                averageRating: 0
+            };
+        }
+        
+        // Calculate total number of reviews
+        const totalReviews = allReviews.length;
+        
+        // Calculate average star rating
+        const totalStars = allReviews.reduce((sum, review) => {
+            const rating = review.stars || review.rating || 0;
+            return sum + rating;
+        }, 0);
+        
+        const averageRating = totalReviews > 0 ? (totalStars / totalReviews).toFixed(1) : 0;
+        
+        return {
+            totalReviews,
+            averageRating: parseFloat(averageRating)
+        };
+    };    
+
     return (
         <div className="business-details-container">
             {business && (
@@ -179,9 +221,9 @@ function BusinessDetails() {
                         <h1>{business.name}</h1>
                     </div>
                     <div className="business-details-ratings">
-                        <div>{renderStars(business.rating)}</div>
-                        <div><p>{business.rating}</p></div>
-                        <p>({business.user_ratings_total} reviews)</p>
+                        <div>{renderStars(ratingLogic().averageRating)}</div>
+                        <div><p>{ratingLogic().averageRating}</p></div>
+                        <p>({ratingLogic().totalReviews} reviews)</p>
                     </div>
                     <div className="business-details-hours-website">
                         <div>{isBusinessOpen()} {getCurrentDayHours(business.hours)}</div>
