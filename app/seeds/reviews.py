@@ -20,17 +20,17 @@ def seed_reviews():
     )
     demo_review_4 = Reviews(
         userId=1,
-        message="A literature review is a critical summary and evaluation of the current resources (e.g., books and journal articles) on a specific topic or research question. It is a crucial part of academic writing, such as dissertations, in all categories and fields. Essentially, literature reviews help contextualize your investigations and show how your work is building on existing research.",
+        message="A literature review is a critical summary and evaluation of the current resources (e.g., books and journal articles) on a specific topic or research question. ",
         stars=5
     )
     demo_review_5 = Reviews(
         userId=1,
-        message="It’s also essential that a literature review critically analyze the sources cited in your study, considering factors such as sample size, research design, and potential biases. Be sure to structure your literature review using the same referencing style as the rest of your research paper",
+        message="It’s also essential that a literature review critically analyze the sources cited in your study, considering factors such as sample size, research design, and potential biases.",
         stars=1
     )
     demo_review_6 = Reviews(
         userId=1,
-        message="A literature review is a crucial step in the research process, providing an in-depth analysis of existing research on a specific topic. However, many students and researchers often struggle with the time it takes to complete this task. In this article, we’ll explore the factors that influence the duration of writing a literature review and offer practical tips to help you get started.",
+        message="A literature review is a crucial step in the research process, providing an in-depth analysis of existing research on a specific topic.",
         stars=2
     )
     demo_review_7 = Reviews(
