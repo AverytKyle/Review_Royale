@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecentReviews } from "../../redux/reviews";
 import './LandingPage.css'
-import { getBusinessById, getPlaceById, getAllBusinesses } from "../../redux/businessess";
+import { getBusinessById, getPlaceById } from "../../redux/businessess";
 
 function LandingPage() {
     const navigate = useNavigate();
