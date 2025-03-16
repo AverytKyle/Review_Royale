@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlaceById, getBusinessById } from "../../redux/businessess";
-import { getReviewsByBusiness, getAllPlaceReviews } from "../../redux/reviews";
+import { getReviewsByBusiness, getAllPlaceReviews, resetReviews } from "../../redux/reviews";
 import BusinessMap from "../Maps/BusinessMap";
 import CreateReviewModal from "../Reviews/CreateReviewModal";
 import OpenModalButton from "../OpenModalButton";
@@ -45,6 +45,7 @@ function BusinessDetails() {
                 if (businessId.length > 3) {
                     // Google Places API path
                     await dispatch(getPlaceById(businessId));
+                    await dispatch(resetReviews());
                     await dispatch(getAllPlaceReviews(businessId));
                 } else {
                     const businessResponse = await dispatch(getBusinessById(businessId));
@@ -135,7 +136,7 @@ function BusinessDetails() {
         const today = now.getDay();
         const todayHours = business.opening_hours.periods[today];
 
-        if (todayHours) {
+        if (todayHours.close) {
             const openTime = parseInt(todayHours.open.time.slice(0, 2)) * 60 +
                 parseInt(todayHours.open.time.slice(2));
             const closeTime = parseInt(todayHours.close.time.slice(0, 2)) * 60 +
