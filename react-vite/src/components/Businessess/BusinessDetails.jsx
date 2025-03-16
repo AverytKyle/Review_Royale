@@ -45,12 +45,12 @@ function BusinessDetails() {
                 if (businessId.length > 3) {
                     // Google Places API path
                     await dispatch(getPlaceById(businessId));
-                    await dispatch(resetReviews());
                     await dispatch(getAllPlaceReviews(businessId));
                 } else {
                     const businessResponse = await dispatch(getBusinessById(businessId));
                     if (businessResponse) {
                         // Use the review_connections table relationship
+                        await dispatch(resetReviews());
                         await dispatch(getReviewsByBusiness(parseInt(businessId)));
                     }
                 }
