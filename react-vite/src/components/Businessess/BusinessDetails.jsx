@@ -120,7 +120,7 @@ function BusinessDetails() {
         const dayOfWeek = today.getDay();
         const currentDayHours = hours[dayOfWeek];
 
-        return currentDayHours?.time || 'Closed'; // Using optional chaining
+        return currentDayHours?.time || 'Closed';
     };
 
     const isBusinessOpen = () => {
@@ -136,7 +136,9 @@ function BusinessDetails() {
         const today = now.getDay();
         const todayHours = business.opening_hours.periods[today];
 
-        if (todayHours.close) {
+        if (business.opening_hours.periods.length === 1) {
+            return <span className="status-open">Open</span>;
+        } else if (todayHours.close) {
             const openTime = parseInt(todayHours.open.time.slice(0, 2)) * 60 +
                 parseInt(todayHours.open.time.slice(2));
             const closeTime = parseInt(todayHours.close.time.slice(0, 2)) * 60 +
@@ -174,46 +176,38 @@ function BusinessDetails() {
 
     const ratingLogic = () => {
         let dbReviews = [];
-        let googleReviewsArr = [];
-        
-        // Get database reviews if they exist
-        if (reviews) {
-            dbReviews = Object.values(reviews);
+        let totalReviews = 0;
+        let averageRating = 0;
+    
+        if (Object.keys(googleReviews).length > 0) {
+            if (reviews) {
+                dbReviews = Object.values(reviews);
+                totalReviews = (business.user_ratings_total || 0) + dbReviews.length;
+            } else {
+                totalReviews = business.user_ratings_total || 0;
+            }
+            
+            averageRating = business.rating || 0;
+        } else {
+            if (Object.keys(reviews).length > 0) {
+                dbReviews = Object.values(reviews);
+                totalReviews = dbReviews.length;
+    
+                const totalStars = dbReviews.reduce((sum, review) => {
+                    const rating = review.stars;
+                    return sum + rating;
+                }, 0);
+    
+                averageRating = parseFloat((totalStars / totalReviews).toFixed(1));
+            }
         }
-        
-        // Get Google reviews if they exist
-        if (googleReviews) {
-            googleReviewsArr = Object.values(googleReviews);
-        }
-        
-        // Combine all reviews
-        const allReviews = [...dbReviews, ...googleReviewsArr];
-        
-        // If there are no reviews, return default values
-        if (allReviews.length === 0) {
-            return {
-                totalReviews: 0,
-                averageRating: 0
-            };
-        }
-        
-        // Calculate total number of reviews
-        const totalReviews = allReviews.length;
-        
-        // Calculate average star rating
-        const totalStars = allReviews.reduce((sum, review) => {
-            const rating = review.stars || review.rating || 0;
-            return sum + rating;
-        }, 0);
-        
-        const averageRating = totalReviews > 0 ? (totalStars / totalReviews).toFixed(1) : 0;
-        
+    
         return {
-            totalReviews,
+            totalReviews: totalReviews,
             averageRating: parseFloat(averageRating)
         };
-    };    
-
+    };
+    
     return (
         <div className="business-details-container">
             {business && (
