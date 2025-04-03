@@ -16,9 +16,11 @@ function Navigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationTerm, ] = useState("");
+  const [locationTerm, setLocationTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   // const mapsApiKey = useSelector(state => state.maps.key);
   const sessionUser = useSelector((state) => state.session.user);
   const [, setCategories] = useState([]);
@@ -28,8 +30,17 @@ function Navigation() {
   }, [dispatch]);
 
   useEffect(() => {
-    const handleDocumentClick = () => {
-      setShowSuggestions(false);
+    const handleDocumentClick = (e) => {
+      const isOutsideSearchContainer = !e.target.closest('.search-input-container');
+      const isOutsideLocationContainer = !e.target.closest('.location-input-container');
+
+      if (isOutsideSearchContainer) {
+        setShowSuggestions(false);
+      }
+
+      if (isOutsideLocationContainer) {
+        setShowLocationSuggestions(false);
+      }
     };
 
     // Add click listener to entire document
@@ -60,54 +71,84 @@ function Navigation() {
     fetchCategories();
   }, []);
 
+  const handleLocationInput = (value) => {
+    // Directly update the state with the input value
+    setLocationTerm(value);
+
+    if (value.length >= 2) {
+      // Only attempt to fetch suggestions if we have enough characters
+      fetchLocationSuggestions(value);
+    } else {
+      setLocationSuggestions([]);
+      setShowLocationSuggestions(false);
+    }
+  };
+
+  const fetchLocationSuggestions = async (value) => {
+    try {
+      const { AutocompleteService } = await google.maps.importLibrary("places");
+      const service = new AutocompleteService();
+
+      service.getPlacePredictions({
+        input: value,
+        componentRestrictions: { country: 'us' },
+        types: ['(cities)']
+      }, (predictions, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+          setLocationSuggestions(predictions);
+          setShowLocationSuggestions(true);
+        } else {
+          setLocationSuggestions([]);
+          setShowLocationSuggestions(false);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching location suggestions:", error);
+      setLocationSuggestions([]);
+      setShowLocationSuggestions(false);
+    }
+  };
+
+  const handleLocationSuggestionClick = (suggestion) => {
+    setLocationTerm(suggestion.description);
+    setShowLocationSuggestions(false);
+
+    // If there's a search term, refresh the business search with the new location
+    // if (searchTerm.length >= 2) {
+    //   handleSearchInput(searchTerm);
+    // }
+  };
+
   const handleSearchInput = async (value) => {
     setSearchTerm(value);
 
     if (value.length >= 2) {
-      // Get local database results
-      const response = await fetch(`/api/businesses/search?term=${value}&location=${locationTerm}`);
-      const localResults = await response.json();
+      try {
+        // Get local database results
+        const response = await fetch(`/api/businesses/search?term=${value}&location=${locationTerm}`);
+        const localResults = await response.json();
 
-      // Get Google Places results
-      const { AutocompleteService } = await google.maps.importLibrary("places");
-      const service = new AutocompleteService();
+        // Get Google Places results
+        const { AutocompleteService } = await google.maps.importLibrary("places");
+        const service = new AutocompleteService();
 
-      const request = {
-        input: value,
-        componentRestrictions: { country: 'us' },
-        types: ['establishment']
-      };
+        let request = {
+          input: value,
+          componentRestrictions: { country: 'us' },
+          types: ['establishment']
+        };
 
-      if (locationTerm) {
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ address: locationTerm }, (results, status) => {
-          if (status === google.maps.GeocoderStatus.OK) {
-            const location = results[0].geometry.location;
-            request.location = location;
-            request.radius = 40234; // ~25 miles in meters
+        // If we have a location, include it in the search query
+        if (locationTerm && locationTerm.trim() !== '') {
+          // Combine business search term with location for better results
+          request = {
+            ...request,
+            input: `${value} ${locationTerm}`
+          };
+        }
 
-            service.getPlacePredictions(request, (predictions, status) => {
-              if (status === google.maps.places.PlacesServiceStatus.OK) {
-                const combinedResults = [
-                  ...(localResults?.businesses || []).map(business => ({
-                    ...business,
-                    isLocal: true,
-                    structured_formatting: {
-                      main_text: business.name,
-                      secondary_text: `${business.addressLineOne}, ${business.city}, ${business.state}`
-                    }
-                  })),
-                  ...predictions.map(pred => ({ ...pred, isGoogle: true }))
-                ];
-                setSuggestions(combinedResults.slice(0, 8));
-                setShowSuggestions(true);
-              }
-            });
-          }
-        });
-      } else {
         service.getPlacePredictions(request, (predictions, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
+          if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
             const combinedResults = [
               ...(localResults?.businesses || []).map(business => ({
                 ...business,
@@ -121,8 +162,24 @@ function Navigation() {
             ];
             setSuggestions(combinedResults.slice(0, 8));
             setShowSuggestions(true);
+          } else {
+            // If no Google results, still show local results
+            const localOnlyResults = (localResults?.businesses || []).map(business => ({
+              ...business,
+              isLocal: true,
+              structured_formatting: {
+                main_text: business.name,
+                secondary_text: `${business.addressLineOne}, ${business.city}, ${business.state}`
+              }
+            }));
+            setSuggestions(localOnlyResults.slice(0, 8));
+            setShowSuggestions(localOnlyResults.length > 0);
           }
         });
+      } catch (error) {
+        console.error("Error in business search:", error);
+        setSuggestions([]);
+        setShowSuggestions(false);
       }
     } else {
       setSuggestions([]);
@@ -166,17 +223,6 @@ function Navigation() {
           <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Review Royale</h1>
         </div>
         <div className="nav-search-container">
-          {/* <div className="nav-category-button">
-            <OpenModalButton
-              buttonText="Select Category ▼"
-              modalComponent={
-                <CategoryModal
-                  categories={categories}
-                // onSelect={handleCategorySelect}
-                />
-              }
-            />
-          </div> */}
           <div className="search-input-container" style={{ position: 'relative' }}>
             <input
               type="search"
@@ -184,14 +230,11 @@ function Navigation() {
               placeholder="Search for businesses"
               value={searchTerm}
               onChange={(e) => handleSearchInput(e.target.value)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (suggestions.length > 0) setShowSuggestions(true);
+              }}
             />
-            {/* <input
-              type="search"
-              className="nav-location-bar"
-              placeholder="Location"
-              value={locationTerm}
-              onChange={(e) => setLocationTerm(e.target.value)}
-            /> */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="search-suggestions"
                 style={{
@@ -209,9 +252,12 @@ function Navigation() {
                   <div
                     key={result.isLocal ? result.id : result.place_id}
                     className="suggestion-item"
-                    onClick={() => result.isLocal ?
-                      navigate(`/businesses/${result.id}`) :
-                      handleSuggestionClick(result)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      result.isLocal ?
+                        navigate(`/businesses/${result.id}`) :
+                        handleSuggestionClick(result);
+                    }}
                     style={{
                       padding: '10px',
                       cursor: 'pointer',
@@ -230,7 +276,57 @@ function Navigation() {
                 ))}
               </div>
             )}
+            <div className="location-input-container" style={{ position: 'relative' }}>
+              <input
+                type="search"
+                className="nav-location-bar"
+                placeholder="Near (city, state, zip)"
+                value={locationTerm}
+                onChange={(e) => handleLocationInput(e.target.value)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (locationSuggestions.length > 0) setShowLocationSuggestions(true);
+                }}
+              />
+              {showLocationSuggestions && locationSuggestions.length > 0 && (
+                <div className="location-search-suggestions"
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 15,
+                    right: -10,
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    zIndex: 1000
+                  }}>
+                  {locationSuggestions.map((suggestion) => (
+                    <div
+                      key={suggestion.place_id}
+                      className="suggestion-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLocationSuggestionClick(suggestion);
+                      }}
+                      style={{
+                        padding: '10px',
+                        cursor: 'pointer',
+                        borderBottom: '1px solid #eee'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                    >
+                      <div className="suggestion-main-text">
+                        {suggestion.description}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
         </div>
         {sessionUser ? (
           <div className="logged-in-container">
