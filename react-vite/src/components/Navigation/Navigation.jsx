@@ -112,11 +112,6 @@ function Navigation() {
   const handleLocationSuggestionClick = (suggestion) => {
     setLocationTerm(suggestion.description);
     setShowLocationSuggestions(false);
-
-    // If there's a search term, refresh the business search with the new location
-    // if (searchTerm.length >= 2) {
-    //   handleSearchInput(searchTerm);
-    // }
   };
 
   const handleSearchInput = async (value) => {
