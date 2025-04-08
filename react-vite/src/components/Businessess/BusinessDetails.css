@@ -36,6 +36,7 @@
 .status-open {
     color: #2ecc71;
     font-weight: bold;
+    font-size: 16pt;
 }
 
 .status-closed {
@@ -46,7 +47,8 @@
 .business-details-website {
     color: #0073bb;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: bold;
+    font-size: 16pt;
 }
 
 .business-details-website a:hover {
@@ -186,15 +188,34 @@
     padding: 0.5rem 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: white;
+    background-color: #181F1C;
     cursor: pointer;
 }
 
 .pagination-controls button:disabled {
-    background-color: #f5f5f5;
+    background-color: #181F1C;
     cursor: not-allowed;
 }
 
 .pagination-controls button:hover:not(:disabled) {
     background-color: #f0f0f0;
 }
+
+.business-details-star-container {
+    background-color: #181F1C;
+    border-radius: 4px;
+}
+
+.business-details-ratings .fa-star,
+.business-details-ratings .fa-star-half-alt,
+.business-details-review-stars .fa-star,
+.business-details-review-stars .fa-star-half-alt {
+    color: #9EA93F; 
+    text-shadow: 0 0 2px black;
+}
+
+.business-details-ratings .far.fa-star,
+.business-details-review-stars .far.fa-star {
+    color: #E0E0E0;
+}
+

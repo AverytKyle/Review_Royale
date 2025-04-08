@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlaceById, getBusinessById } from "../../redux/businessess";
@@ -19,6 +19,9 @@ function BusinessDetails() {
     const [reviewUsers, setReviewUsers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const reviewsPerPage = 5;
+    
+    const [photoUrls, setPhotoUrls] = useState([]);
+    const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
     const combinedReviews = [
         ...(reviews ? Object.values(reviews).map(review => ({
@@ -39,13 +42,47 @@ function BusinessDetails() {
     const currentReviews = combinedReviews.slice(indexOfFirstReview, indexOfLastReview);
     const totalPages = Math.ceil(combinedReviews.length / reviewsPerPage);
 
+    // Function to cycle to the next photo
+    const nextPhoto = useCallback(() => {
+        if (photoUrls.length > 1) {
+            setCurrentPhotoIndex((prevIndex) => 
+                prevIndex === photoUrls.length - 1 ? 0 : prevIndex + 1
+            );
+        }
+    }, [photoUrls.length]);
+
+    // Function to cycle to the previous photo
+    // const prevPhoto = useCallback(() => {
+    //     if (photoUrls.length > 1) {
+    //         setCurrentPhotoIndex((prevIndex) => 
+    //             prevIndex === 0 ? photoUrls.length - 1 : prevIndex - 1
+    //         );
+    //     }
+    // }, [photoUrls.length]);
+
+    // Auto-cycle photos every 5 seconds
+    useEffect(() => {
+        if (photoUrls.length > 1) {
+            const interval = setInterval(nextPhoto, 10000);
+            return () => clearInterval(interval);
+        }
+    }, [photoUrls.length, nextPhoto]);
+
     useEffect(() => {
         const loadData = async () => {
             try {
                 if (businessId.length > 3) {
                     // Google Places API path
-                    await dispatch(getPlaceById(businessId));
+                    const placeData = await dispatch(getPlaceById(businessId));
                     await dispatch(getAllPlaceReviews(businessId));
+
+                    // Get all photo URLs if available
+                    if (placeData && placeData.photos && placeData.photos.length > 0) {
+                        const urls = placeData.photos.map(photo => 
+                            photo.getUrl({ maxWidth: 1200, maxHeight: 400 })
+                        );
+                        setPhotoUrls(urls);
+                    }
                 } else {
                     const businessResponse = await dispatch(getBusinessById(businessId));
                     if (businessResponse) {
@@ -60,7 +97,6 @@ function BusinessDetails() {
                 setIsLoading(false);
             }
         };
-
 
         if (window.google) {
             loadData();
@@ -211,12 +247,20 @@ function BusinessDetails() {
     return (
         <div className="business-details-container">
             {business && (
-                <div className="business-details-header">
+                <div 
+                    className="business-details-header"
+                    style={photoUrls.length > 0 ? {
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${photoUrls[currentPhotoIndex]})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        color: 'white'
+                    } : {}}
+                >
                     <div className="business-dtails-name">
                         <h1>{business.name}</h1>
                     </div>
                     <div className="business-details-ratings">
-                        <div>{renderStars(ratingLogic().averageRating)}</div>
+                        <div className="business-details-star-container">{renderStars(ratingLogic().averageRating)}</div>
                         <div><p>{ratingLogic().averageRating}</p></div>
                         <p>({ratingLogic().totalReviews} reviews)</p>
                     </div>
