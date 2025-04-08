@@ -9,7 +9,6 @@ import OpenModalButton from "../OpenModalButton";
 import ProfileButton from "./ProfileButton";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
-// import CategoryModal from "./CategoryModal";
 import "./Navigation.css";
 
 function Navigation() {
@@ -21,7 +20,6 @@ function Navigation() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
-  // const mapsApiKey = useSelector(state => state.maps.key);
   const sessionUser = useSelector((state) => state.session.user);
   const [, setCategories] = useState([]);
 
