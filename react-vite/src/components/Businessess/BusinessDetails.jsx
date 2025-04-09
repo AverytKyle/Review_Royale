@@ -187,7 +187,7 @@ function BusinessDetails() {
                 <span className="status-closed">Closed</span>;
         }
 
-        return <p>Hours unavailable</p>;
+        return <p className="unavailable">Hours unavailable</p>;
     };
 
     const Pagination = () => {
