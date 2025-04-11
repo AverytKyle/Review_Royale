@@ -19,7 +19,7 @@ function BusinessDetails() {
     const [reviewUsers, setReviewUsers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const reviewsPerPage = 5;
-    
+
     const [photoUrls, setPhotoUrls] = useState([]);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
@@ -45,7 +45,7 @@ function BusinessDetails() {
     // Function to cycle to the next photo
     const nextPhoto = useCallback(() => {
         if (photoUrls.length > 1) {
-            setCurrentPhotoIndex((prevIndex) => 
+            setCurrentPhotoIndex((prevIndex) =>
                 prevIndex === photoUrls.length - 1 ? 0 : prevIndex + 1
             );
         }
@@ -78,7 +78,7 @@ function BusinessDetails() {
 
                     // Get all photo URLs if available
                     if (placeData && placeData.photos && placeData.photos.length > 0) {
-                        const urls = placeData.photos.map(photo => 
+                        const urls = placeData.photos.map(photo =>
                             photo.getUrl({ maxWidth: 1200, maxHeight: 400 })
                         );
                         setPhotoUrls(urls);
@@ -141,7 +141,7 @@ function BusinessDetails() {
             stars.push(<i key="half" className="fas fa-star-half-alt"></i>);
         }
 
-        const emptyStars = 5 - Math.ceil(rating);
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
         for (let i = 0; i < emptyStars; i++) {
             stars.push(<i key={`empty-${i}`} className="far fa-star"></i>);
         }
@@ -214,7 +214,7 @@ function BusinessDetails() {
         let dbReviews = [];
         let totalReviews = 0;
         let averageRating = 0;
-    
+
         if (Object.keys(googleReviews).length > 0) {
             if (reviews) {
                 dbReviews = Object.values(reviews);
@@ -222,32 +222,32 @@ function BusinessDetails() {
             } else {
                 totalReviews = business.user_ratings_total || 0;
             }
-            
+
             averageRating = business.rating || 0;
         } else {
             if (Object.keys(reviews).length > 0) {
                 dbReviews = Object.values(reviews);
                 totalReviews = dbReviews.length;
-    
+
                 const totalStars = dbReviews.reduce((sum, review) => {
                     const rating = review.stars;
                     return sum + rating;
                 }, 0);
-    
+
                 averageRating = parseFloat((totalStars / totalReviews).toFixed(1));
             }
         }
-    
+
         return {
             totalReviews: totalReviews,
             averageRating: parseFloat(averageRating)
         };
     };
-    
+
     return (
         <div className="business-details-container">
             {business && (
-                <div 
+                <div
                     className="business-details-header"
                     style={photoUrls.length > 0 ? {
                         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${photoUrls[currentPhotoIndex]})`,
